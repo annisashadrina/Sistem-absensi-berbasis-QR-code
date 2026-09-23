@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Sistem Presensi Digital</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Top Navigation Bar -->
+  <header class="admin-navbar">
+    <div class="admin-brand">
+      <div style="font-size: 24px;">🏛️</div>
+      <div>
+        <h1 style="font-size: 1.15rem; font-weight: 800; color: #0a3d24;">PANEL ADMINISTRATOR HR</h1>
+        <div style="font-size: 0.78rem; color: #64748b;">SMP Al Falah Assalam Tropodo</div>
+      </div>
+    </div>
+
+    <div class="admin-nav-actions">
+      <a href="/display" target="_blank" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 14px;">
+        📺 Buka Display TV
+      </a>
+      <a href="/scan" target="_blank" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 14px;">
+        📱 Buka Scanner
+      </a>
+      <div class="admin-user-pill">
+        <span>🛡️</span>
+        <span id="adminName">Admin</span>
+      </div>
+      <button onclick="handleLogout()" class="btn btn-outline" style="font-size: 0.82rem; padding: 6px 14px; color: #ef4444; border-color: #fca5a5;">
+        Keluar
+      </button>
+    </div>
+  </header>
+
+  <main class="admin-container">
+
+    <!-- Tab Navigasi -->
+    <div class="admin-tab-nav">
+      <button class="tab-btn active" id="tabBtnAttendance" onclick="switchTab('attendance')">
+        📋 Rekap & Monitoring Absensi
+      </button>
+      <button class="tab-btn" id="tabBtnAudit" onclick="switchTab('audit')">
+        🛡️ Log Audit Keamanan & Deteksi
+      </button>
+    </div>
+
+    <!-- TAB 1: KONTEN REKAP ABSENSI -->
+    <div id="tabContentAttendance">
+      <!-- Bab 21: Ringkasan Metrik Kartu -->
+      <div class="stat-cards-grid">
+        <div class="stat-card total">
+          <span class="stat-title">Total Karyawan</span>
+          <span id="metricTotal" class="stat-value font-mono">0</span>
+          <span class="stat-sub">Karyawan aktif terdaftar</span>
+        </div>
+
+        <div class="stat-card present">
+          <span class="stat-title">Sudah Absen</span>
+          <span id="metricPresent" class="stat-value font-mono">0</span>
+          <span class="stat-sub">Telah melakukan check-in</span>
+        </div>
+
+        <div class="stat-card ontime">
+          <span class="stat-title">Tepat Waktu</span>
+          <span id="metricOnTime" class="stat-value font-mono" style="color: #15803D;">0</span>
+          <span class="stat-sub">&le; 08:00:00 WIB</span>
+        </div>
+
+        <div class="stat-card late">
+          <span class="stat-title">Terlambat</span>
+          <span id="metricLate" class="stat-value font-mono" style="color: #B45309;">0</span>
+          <span class="stat-sub">&gt; 08:00:00 WIB</span>
+        </div>
+
+        <div class="stat-card absent">
+          <span class="stat-title">Belum Absen</span>
+          <span id="metricAbsent" class="stat-value font-mono" style="color: #B91C1C;">0</span>
+          <span class="stat-sub">Belum ada record</span>
+        </div>
+
+        <div class="stat-card completed">
+          <span class="stat-title">Selesai Pulang</span>
+          <span id="metricCompleted" class="stat-value font-mono" style="color: #3730A3;">0</span>
+          <span class="stat-sub">Check-out &ge; 16:00</span>
+        </div>
+      </div>
+
+      <!-- Bab 22: Filter Dashboard -->
+      <div class="admin-toolbar-card">
+        <div class="toolbar-flex">
+          <div class="filter-group">
+            <label class="filter-label" for="filterDate">Tanggal Kehadiran</label>
+            <input type="date" id="filterDate" class="filter-control">
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filterDepartment">Departemen / Unit</label>
+            <select id="filterDepartment" class="filter-control">
+              <option value="">Semua Departemen</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filterStatus">Status Kehadiran</label>
+            <select id="filterStatus" class="filter-control">
+              <option value="">Semua Status</option>
+              <option value="ON_TIME">Tepat Waktu (ON_TIME)</option>
+              <option value="LATE">Terlambat (LATE)</option>
+              <option value="COMPLETED">Sudah Pulang (COMPLETED)</option>
+              <option value="ABSENT">Belum Absen (ABSENT)</option>
+            </select>
+          </div>
+
+          <div class="filter-group" style="flex: 1; min-width: 200px;">
+            <label class="filter-label" for="filterSearch">Cari Nama / NIK</label>
+            <input type="text" id="filterSearch" class="filter-control" placeholder="Ketik nama atau NIK...">
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button onclick="applyFilters()" class="btn btn-primary" style="padding: 8px 18px;">
+              🔍 Cari
+            </button>
+            <button onclick="exportToCSV()" class="btn btn-outline" style="padding: 8px 14px;">
+              📥 Ekspor CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bab 21: Tabel Absensi -->
+      <div class="data-table-card">
+        <div class="data-table-header">
+          <h2 style="font-size: 1.05rem; font-weight: 700; color: #0a3d24;">Daftar Rekap Kehadiran Karyawan</h2>
+          <span id="tableRecordCount" class="badge" style="background:#F1F5F9; color:#475569;">0 Karyawan</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>NIK</th>
+                <th>Nama Karyawan</th>
+                <th>Departemen</th>
+                <th>Jabatan</th>
+                <th>Check-In</th>
+                <th>Status Masuk</th>
+                <th>Check-Out</th>
+                <th>Status Akhir</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 28px;">
+                  Memuat data absensi...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LOG AUDIT KEAMANAN (Bab 23.5 & Bab 29) -->
+    <div id="tabContentAudit" style="display: none;">
+      <div class="data-table-card">
+        <div class="data-table-header">
+          <div>
+            <h2 style="font-size: 1.05rem; font-weight: 700; color: #0a3d24;">Log Audit Keamanan Sistem</h2>
+            <div style="font-size: 0.8rem; color: #64748b;">Mendeteksi aktivitas login, check-in, token kedaluwarsa, dan potensi manipulasi absensi.</div>
+          </div>
+          <button onclick="loadAuditLogs()" class="btn btn-outline" style="font-size: 0.8rem; padding: 6px 14px;">
+            🔄 Refresh Log
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Waktu (Server)</th>
+                <th>Aksi</th>
+                <th>Karyawan</th>
+                <th>IP Address</th>
+                <th>User Agent</th>
+                <th>Detail Informasi</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 28px;">
+                  Memuat log audit...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

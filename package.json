@@ -1,0 +1,22 @@
+{
+  "name": "ium",
+  "version": "1.0.0",
+  "description": "Sistem Absensi Karyawan merupakan sistem berbasis web yang digunakan untuk mencatat kehadiran dan kepulangan karyawan secara terpusat ke dalam database perusahaan.",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node db/migrate.js",
+    "test": "node tests/integration_test.js"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "pg": "^8.23.0",
+    "qrcode": "^1.5.4"
+  }
+}

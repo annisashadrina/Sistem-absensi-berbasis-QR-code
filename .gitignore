@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# Database Data (Embedded PGlite data)
+data/
+*.sqlite
+*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo

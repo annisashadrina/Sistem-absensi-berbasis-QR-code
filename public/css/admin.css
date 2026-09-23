@@ -1,0 +1,223 @@
+/* STYLING DASHBOARD ADMINISTRATOR HR */
+body.admin-body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  min-height: 100vh;
+}
+
+.admin-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F1F5F9;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 28px 32px;
+}
+
+/* Stat Cards Grid */
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #CBD5E1;
+}
+
+.stat-card.total::before { background: #3B82F6; }
+.stat-card.present::before { background: #10B981; }
+.stat-card.ontime::before { background: #15803D; }
+.stat-card.late::before { background: #F59E0B; }
+.stat-card.absent::before { background: #EF4444; }
+.stat-card.completed::before { background: #6366F1; }
+
+.stat-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-top: 6px;
+}
+
+.stat-sub {
+  font-size: 0.78rem;
+  color: #94A3B8;
+  margin-top: 4px;
+}
+
+/* Tabs & Toolbar */
+.admin-toolbar-card {
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.toolbar-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.filter-control {
+  padding: 8px 12px;
+  border: 1.5px solid #CBD5E1;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: #0F172A;
+  background: #ffffff;
+}
+
+.filter-control:focus {
+  outline: none;
+  border-color: #10B981;
+}
+
+/* Data Table */
+.data-table-card {
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.custom-table th {
+  background: #F8FAFC;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 18px;
+  border-bottom: 1.5px solid #E2E8F0;
+}
+
+.custom-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #1E293B;
+}
+
+.custom-table tr:hover {
+  background-color: #F8FAFC;
+}
+
+/* Tab Switcher */
+.admin-tab-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1.5px solid #E2E8F0;
+  padding-bottom: 8px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #DCFCE7;
+  color: #15803D;
+}

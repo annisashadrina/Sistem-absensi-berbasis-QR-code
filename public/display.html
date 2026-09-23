@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layar Monitor Presensi Digital - SMP Al Falah Assalam</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/display.css">
+</head>
+<body class="display-screen">
+
+  <!-- Top Header -->
+  <header class="display-header">
+    <div class="brand-wrapper">
+      <div class="brand-logo-circle">🕌</div>
+      <div>
+        <h1 class="brand-title">SMP AL FALAH ASSALAM TROPODO</h1>
+        <div class="brand-subtitle">Sistem Presensi Digital Karyawan & Guru Berbasis QR Code Dinamis</div>
+      </div>
+    </div>
+
+    <div class="clock-panel">
+      <div class="live-badge">
+        <span class="pulse-dot"></span>
+        <span>SERVER LIVE</span>
+      </div>
+      <div>
+        <div id="liveDigitalClock" class="digital-time">--:--:--</div>
+        <div id="liveDisplayDate" class="digital-date">Memuat tanggal...</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Display -->
+  <main class="display-main">
+    
+    <!-- Kolom Kiri: 5 Karyawan Terawal Hari Ini (Bab 19) -->
+    <aside class="side-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <span class="card-title-icon">🏆</span>
+          <span>5 Karyawan Terawal</span>
+        </h2>
+        <span class="badge" style="background: rgba(212,175,55,0.2); color:#FBBF24; border:1px solid #D4AF37;">Hari Ini</span>
+      </div>
+      <div class="card-body" id="leaderboardList">
+        <div style="text-align: center; color: #94a3b8; padding: 20px;">Memuat data kehadiran...</div>
+      </div>
+    </aside>
+
+    <!-- Kolom Tengah: Dynamic QR Code Stage (Bab 5, 6, 20) -->
+    <section class="center-stage">
+      <div class="qr-monitor-card">
+        <div id="qrTypeBadge" class="qr-type-badge qr-type-in">
+          ABSENSI MASUK
+        </div>
+
+        <div class="qr-frame-box" id="qrFrameBox">
+          <img id="qrImage" src="" alt="Dynamic QR Code">
+        </div>
+
+        <!-- Progress Bar 5 Detik -->
+        <div class="timer-container">
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <div class="timer-label">
+            <span>⏱️ Berganti dalam:</span>
+            <span id="timerCountdown" class="font-mono" style="font-weight: 800; font-size: 1rem;">5s</span>
+          </div>
+        </div>
+
+        <div class="qr-instructions">
+          Arahkan <strong>Kamera Smartphone</strong> atau buka <strong>Web Scanner</strong> untuk melakukan absensi.
+          <div style="font-size: 0.76rem; color: #94a3b8; margin-top: 4px;">
+            Token ID: <span id="tokenShortId" class="font-mono">...</span> • Berlaku 5 Detik
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kolom Kanan: Live Feed Absensi Terkini -->
+    <aside class="side-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <span class="card-title-icon">⚡</span>
+          <span>Riwayat Kehadiran Live</span>
+        </h2>
+        <span class="badge" style="background: rgba(74,222,128,0.15); color:#4ade80; border:1px solid rgba(74,222,128,0.3);">Real-Time</span>
+      </div>
+      <div class="card-body" id="liveFeedList">
+        <div style="text-align: center; color: #94a3b8; padding: 20px;">Menunggu absensi masuk...</div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Bottom Ticker -->
+  <footer class="display-footer">
+    <div class="ticker-content">
+      <div class="ticker-item">
+        <span>⏰ Batas Waktu Masuk:</span>
+        <strong class="font-mono">08:00:00 WIB</strong>
+      </div>
+      <div class="ticker-item">
+        <span>🚪 Absensi Pulang:</span>
+        <strong class="font-mono">Mulai 16:00:00 WIB</strong>
+      </div>
+      <div class="ticker-item">
+        <span>🔒 Keamanan:</span>
+        <span>QR Token Dinamis 5 Detik • Anti Titip Absen</span>
+      </div>
+    </div>
+    <div>
+      <a href="/" style="color: #94a3b8; text-decoration: none; font-size: 0.8rem;">Portal Utama &rarr;</a>
+    </div>
+  </footer>
+
+  <script src="/js/display.js"></script>
+</body>
+</html>

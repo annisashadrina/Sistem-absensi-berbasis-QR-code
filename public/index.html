@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Absensi Karyawan Berbasis QR Code Dinamis</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #0a3d24 0%, #04140b 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px 30px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: #FBBF24;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ffffff 40%, #9fe1b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      max-width: 720px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+    .module-card {
+      background: rgba(15, 60, 36, 0.45);
+      border: 1px solid rgba(189, 227, 201, 0.25);
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-decoration: none;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card:hover {
+      transform: translateY(-4px);
+      background: rgba(15, 60, 36, 0.7);
+      border-color: #D4AF37;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 24px rgba(212, 175, 55, 0.2);
+    }
+    .module-icon-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .module-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .module-detail {
+      font-size: 0.85rem;
+      color: #9fe1b8;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+    .module-link-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #D4AF37;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .features-section {
+      background: rgba(0, 0, 0, 0.3);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      margin-top: auto;
+    }
+    .features-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      text-align: center;
+    }
+    .feature-item h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 6px;
+    }
+    .feature-item p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-container">
+    <div class="hero-badge">
+      <span>🕌</span>
+      <span>SMP AL FALAH ASSALAM TROPODO</span>
+    </div>
+    <h1 class="hero-title">Sistem Absensi Karyawan Berbasis QR Code Dinamis</h1>
+    <p class="hero-desc">
+      Solusi presensi digital tanpa aplikasi mobile dengan validasi jam server, token dinamis yang berganti tiap 5 detik, serta proteksi keamanan anti titip absen.
+    </p>
+  </div>
+
+  <div class="modules-grid">
+    
+    <!-- Modul 1: Layar Display TV -->
+    <a href="/display" class="module-card">
+      <div class="module-icon-circle" style="background: rgba(212, 175, 55, 0.2); color: #FBBF24;">
+        📺
+      </div>
+      <h3 class="module-name">Layar Display TV</h3>
+      <p class="module-detail">
+        Layar monitor/kiosk kantor yang memancarkan QR Code aktif tiap 5 detik, jam server presisi, 5 Karyawan Terawal, dan live feed kehadiran.
+      </p>
+      <div class="module-link-text">
+        Buka Layar Monitor &rarr;
+      </div>
+    </a>
+
+    <!-- Modul 2: Web QR Scanner -->
+    <a href="/scan" class="module-card">
+      <div class="module-icon-circle" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">
+        📱
+      </div>
+      <h3 class="module-name">Web Scanner HP</h3>
+      <p class="module-detail">
+        Kamera scanner di browser smartphone karyawan untuk memindai QR Code masuk (Check-In) atau pulang (Check-Out) secara instan.
+      </p>
+      <div class="module-link-text">
+        Buka Scanner Web &rarr;
+      </div>
+    </a>
+
+    <!-- Modul 3: Login & Akun Demo -->
+    <a href="/login" class="module-card">
+      <div class="module-icon-circle" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA;">
+        🔐
+      </div>
+      <h3 class="module-name">Login Pengguna</h3>
+      <p class="module-detail">
+        Autentikasi session persistent karyawan dan administrator dengan opsi pengisian akun demo sekali klik (Budi Santoso, Siti Rahma, Admin).
+      </p>
+      <div class="module-link-text">
+        Halaman Login &rarr;
+      </div>
+    </a>
+
+    <!-- Modul 4: Dashboard Admin -->
+    <a href="/admin" class="module-card">
+      <div class="module-icon-circle" style="background: rgba(139, 92, 246, 0.2); color: #A78BFA;">
+        📊
+      </div>
+      <h3 class="module-name">Dashboard Admin</h3>
+      <p class="module-detail">
+        Monitoring metrik kehadiran real-time, filter tanggal & departemen, tabel rekapitulasi, ekspor CSV, dan audit log deteksi kecurangan.
+      </p>
+      <div class="module-link-text">
+        Masuk Dashboard &rarr;
+      </div>
+    </a>
+
+  </div>
+
+  <section class="features-section">
+    <div class="features-container">
+      <div class="feature-item">
+        <h4>⏱️ QR Dinamis 5 Detik</h4>
+        <p>Token acak berumur pendek. Token lama otomatis kedaluwarsa dan tidak bisa digunakan lagi.</p>
+      </div>
+      <div class="feature-item">
+        <h4>🎯 Single-Use Token</h4>
+        <p>Satu token hanya dapat dipakai satu kali absensi, mencegah duplikasi dan pembagian tautan.</p>
+      </div>
+      <div class="feature-item">
+        <h4>⏰ Server Timestamp</h4>
+        <p>Waktu server sebagai patokan mutlak. Manipulasi jam HP tidak akan mempengaruhi status ketepatan waktu.</p>
+      </div>
+      <div class="feature-item">
+        <h4>🏆 5 Karyawan Terawal</h4>
+        <p>Papan apresiasi kedatangan paling awal hari ini yang diperbarui secara otomatis.</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

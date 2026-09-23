@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Presensi Digital - SMP Al Falah Assalam Tropodo</title>
+<!-- Tailwind CSS CDN with forms & container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans for high-readability LCD screen display -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Custom Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            alfalah: {
+              dark: '#0a3d24',
+              primary: '#0F5132',
+              emerald: '#166534',
+              accent: '#198754',
+              gold: '#D4AF37',
+              goldLight: '#FBBF24',
+              surface: '#F4F9F5',
+              border: '#BDE3C9'
+            }
+          },
+          boxShadow: {
+            'screen': '0 20px 40px -15px rgba(10, 61, 36, 0.15)',
+            'card': '0 4px 14px 0 rgba(15, 81, 50, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Typography & Global Layout Styles -->
+<style data-purpose="typography">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b2e1c;
+    }
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+<style data-purpose="scroll-and-ticker">
+    /* Subtle custom scrollbar for TV feed table */
+    .table-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .table-scrollbar::-webkit-scrollbar-track {
+      background: #f1f8f3;
+    }
+    .table-scrollbar::-webkit-scrollbar-thumb {
+      background: #84cc9a;
+      border-radius: 4px;
+    }
+    .table-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #0F5132;
+    }
+
+    /* Continuous horizontal ticker animation */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-ticker {
+      display: flex;
+      width: 200%;
+      animation: marquee 32s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
+  </style>
+<!-- END: Custom Typography & Global Layout Styles -->
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between overflow-x-hidden antialiased select-none bg-gradient-to-br from-emerald-950 via-[#0a3821] to-[#041a0e] p-2 md:p-3.5 gap-2">
+<!-- BEGIN: HeaderSection -->
+<!-- Top Navigation & Institutional Branding Bar matching on-wall monitor standards -->
+<header class="bg-gradient-to-r from-alfalah-dark via-alfalah-primary to-alfalah-dark rounded-xl shadow-lg border-b-2 border-alfalah-gold/70 px-4 py-2.5 text-white flex flex-col md:flex-row items-center justify-between gap-3">
+<!-- Left: Official Emblem Logo & System Title -->
+<div class="flex items-center gap-3.5 w-full md:w-auto justify-between md:justify-start">
+<div class="flex items-center gap-3">
+<div class="bg-white/10 backdrop-blur-sm p-1.5 rounded-lg border border-white/20 shadow-inner flex items-center justify-center">
+<img alt="Logo SMP Al Falah Assalam Tropodo" class="h-10 md:h-12 w-auto object-contain brightness-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDTaHzZvP4LQsb4mtPKuOSoRkc8m7dQUfG1-C7TIkA0oLKMEaUv9xmlgHm4FXp3WoEOX2W6qyFpN7vbUXF2wL44XLu4a7OTNM21p5m6MOVdiaXr53Cu0XCaKLMAxHXAxgsh_VCk-mfJSZCAi4qMhL6d-uitewHJphbi4sv_bNydFopF3_CX-31g6f6_DEGmeSbi2om3fl9fV2rrsgLsiwWuIT2Z-vcv8P_-NpsdZGIK-PLyFqSXc6m"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-xs uppercase tracking-wider font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/40">
+              SMART PRESENSI v2.6
+            </span>
+<span class="hidden sm:inline-block text-[11px] text-emerald-200/90 font-medium">
+              Sistem Absensi Terintegrasi
+            </span>
+</div>
+<h1 class="text-lg md:text-xl font-extrabold tracking-tight text-white leading-tight">
+            SMP AL FALAH ASSALAM TROPODO
+          </h1>
+</div>
+</div>
+</div>
+<!-- Center: Operational Shift & Status Indicator -->
+<div class="hidden lg:flex items-center gap-2 bg-emerald-900/60 px-3.5 py-1.5 rounded-lg border border-emerald-600/40 text-xs">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
+</span>
+<span class="font-semibold text-emerald-100">Presensi Shift Pagi Aktif:</span>
+<span class="font-bold text-amber-300">06:00 - 07:00 WIB</span>
+</div>
+<!-- Right: Real-time Live Clock & Network Sync Status -->
+<div class="flex items-center gap-4 w-full md:w-auto justify-end">
+<div class="text-right">
+<div class="text-xs font-semibold text-emerald-100 tracking-wide" id="live-date-header">
+          Kamis, 24 September 2026
+        </div>
+<div class="text-2xl md:text-3xl font-extrabold font-mono-num text-amber-300 drop-shadow-sm leading-none" id="live-clock-header">
+          06:42:18 <span class="text-xs font-sans text-emerald-200">WIB</span>
+</div>
+</div>
+<div class="hidden sm:flex flex-col items-center justify-center bg-black/25 px-2.5 py-1 rounded-lg border border-white/10 text-center">
+<span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300">SERVER CLOUD</span>
+<span class="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span> ONLINE
+        </span>
+</div>
+</div>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: MainContentGrid -->
+<!-- 2-Column Desktop Display Structure matching reference monitor photo (38% : 62%) -->
+<main class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1">
+<!-- BEGIN: LeftColumn (QR Scanner, Quick Stats, & Top 5 Early Arrivals) -->
+<aside class="lg:col-span-5 flex flex-col gap-3">
+<!-- Box 1: Dynamic QR Code Scanner Container -->
+<section class="bg-white rounded-xl shadow-card border border-emerald-100 overflow-hidden flex flex-col" data-purpose="qr-scanner-card">
+<!-- Sub-header -->
+<div class="bg-gradient-to-r from-alfalah-primary to-alfalah-emerald px-3.5 py-2 text-white flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<h2 class="text-sm font-bold tracking-wide uppercase">QR Code Presensi Masuk Guru</h2>
+</div>
+<span class="text-[11px] font-semibold bg-emerald-900/60 text-emerald-200 px-2 py-0.5 rounded border border-emerald-400/30 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            SiAkad Mobile
+          </span>
+</div>
+<div class="p-3.5 flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-b from-white to-emerald-50/40">
+<!-- High-Contrast Semantic SVG QR Code with Institutional Emblem Badge in center -->
+<div class="relative flex-shrink-0 bg-white p-2.5 rounded-xl border-2 border-emerald-600 shadow-md">
+<svg class="w-36 h-36 md:w-40 md:h-40" fill="none" viewbox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+<!-- Corner Finder Pattern: Top-Left -->
+<rect fill="#0F5132" height="36" rx="4" width="36" x="10" y="10"></rect>
+<rect fill="white" height="24" rx="2" width="24" x="16" y="16"></rect>
+<rect fill="#0F5132" height="12" rx="1" width="12" x="22" y="22"></rect>
+<!-- Corner Finder Pattern: Top-Right -->
+<rect fill="#0F5132" height="36" rx="4" width="36" x="114" y="10"></rect>
+<rect fill="white" height="24" rx="2" width="24" x="120" y="16"></rect>
+<rect fill="#0F5132" height="12" rx="1" width="12" x="126" y="22"></rect>
+<!-- Corner Finder Pattern: Bottom-Left -->
+<rect fill="#0F5132" height="36" rx="4" width="36" x="10" y="114"></rect>
+<rect fill="white" height="24" rx="2" width="24" x="16" y="120"></rect>
+<rect fill="#0F5132" height="12" rx="1" width="12" x="22" y="126"></rect>
+<!-- Synthetic QR Data Modules Matrix -->
+<!-- Row sync indicators -->
+<rect fill="#166534" height="6" width="6" x="52" y="14"></rect>
+<rect fill="#166534" height="6" width="6" x="64" y="14"></rect>
+<rect fill="#166534" height="6" width="6" x="76" y="14"></rect>
+<rect fill="#166534" height="6" width="6" x="88" y="14"></rect>
+<rect fill="#166534" height="6" width="6" x="100" y="14"></rect>
+<rect fill="#166534" height="6" width="6" x="52" y="26"></rect>
+<rect fill="#166534" height="6" width="6" x="70" y="26"></rect>
+<rect fill="#166534" height="6" width="6" x="88" y="26"></rect>
+<rect fill="#166534" height="6" width="6" x="58" y="38"></rect>
+<rect fill="#166534" height="6" width="6" x="76" y="38"></rect>
+<rect fill="#166534" height="6" width="6" x="94" y="38"></rect>
+<!-- Left mid data blocks -->
+<rect fill="#166534" height="6" width="6" x="14" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="26" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="38" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="14" y="66"></rect>
+<rect fill="#166534" height="6" width="6" x="32" y="66"></rect>
+<rect fill="#166534" height="6" width="6" x="20" y="78"></rect>
+<rect fill="#166534" height="6" width="6" x="38" y="78"></rect>
+<rect fill="#166534" height="6" width="6" x="14" y="90"></rect>
+<rect fill="#166534" height="6" width="6" x="26" y="90"></rect>
+<!-- Right mid data blocks -->
+<rect fill="#166534" height="6" width="6" x="114" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="126" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="138" y="54"></rect>
+<rect fill="#166534" height="6" width="6" x="120" y="66"></rect>
+<rect fill="#166534" height="6" width="6" x="138" y="66"></rect>
+<rect fill="#166534" height="6" width="6" x="114" y="78"></rect>
+<rect fill="#166534" height="6" width="6" x="132" y="78"></rect>
+<rect fill="#166534" height="6" width="6" x="120" y="90"></rect>
+<rect fill="#166534" height="6" width="6" x="138" y="90"></rect>
+<!-- Bottom data patterns -->
+<rect fill="#166534" height="6" width="6" x="52" y="114"></rect>
+<rect fill="#166534" height="6" width="6" x="64" y="114"></rect>
+<rect fill="#166534" height="6" width="6" x="82" y="114"></rect>
+<rect fill="#166534" height="6" width="6" x="100" y="114"></rect>
+<rect fill="#166534" height="6" width="6" x="120" y="114"></rect>
+<rect fill="#166534" height="6" width="6" x="58" y="126"></rect>
+<rect fill="#166534" height="6" width="6" x="76" y="126"></rect>
+<rect fill="#166534" height="6" width="6" x="94" y="126"></rect>
+<rect fill="#166534" height="6" width="6" x="114" y="126"></rect>
+<rect fill="#166534" height="6" width="6" x="132" y="126"></rect>
+<rect fill="#166534" height="6" width="6" x="52" y="138"></rect>
+<rect fill="#166534" height="6" width="6" x="70" y="138"></rect>
+<rect fill="#166534" height="6" width="6" x="88" y="138"></rect>
+<rect fill="#166534" height="6" width="6" x="106" y="138"></rect>
+<rect fill="#166534" height="6" width="6" x="126" y="138"></rect>
+</svg>
+<!-- Centered Emblem overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-10 h-10 bg-white rounded-full p-1 shadow-lg border-2 border-alfalah-gold flex items-center justify-center">
+<span class="font-extrabold text-[9px] text-alfalah-primary leading-tight text-center">AL FALAH</span>
+</div>
+</div>
+</div>
+<!-- QR Instruction & Dynamic Token Countdown -->
+<div class="flex-1 flex flex-col justify-center text-center sm:text-left space-y-2">
+<div>
+<p class="text-xs text-emerald-800 font-bold uppercase tracking-wide">
+                Instruksi Presensi:
+              </p>
+<p class="text-xs text-slate-600 leading-relaxed mt-0.5">
+                Buka aplikasi <span class="font-bold text-alfalah-primary">Presensi Guru Al Falah</span>, lalu scan kode dinamis ini dari jarak ± 1 - 2 meter.
+              </p>
+</div>
+<!-- Dynamic Countdown Bar -->
+<div class="bg-emerald-100/70 p-2 rounded-lg border border-emerald-200">
+<div class="flex items-center justify-between text-[11px] font-semibold text-emerald-900 mb-1">
+<span class="flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-emerald-700 animate-spin" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8v8H4z" fill="currentColor"></path>
+</svg>
+                  Token Keamanan Refresh:
+                </span>
+<span class="font-mono-num font-bold text-alfalah-primary" id="qr-countdown">12 Detik</span>
+</div>
+<!-- Progress bar meter -->
+<div class="w-full bg-emerald-200 rounded-full h-1.5 overflow-hidden">
+<div class="bg-alfalah-accent h-1.5 rounded-full transition-all duration-1000" id="qr-progress-bar" style="width: 75%;"></div>
+</div>
+</div>
+<p class="text-[10px] text-slate-500 italic">
+              *Koordinat GPS sekolah terkunci radius 40m dari lobi utama.
+            </p>
+</div>
+</div>
+</section>
+<!-- Box 2: "Top 5 Presensi Terpagi Hari Ini" (As featured on the physical LCD Monitor ref) -->
+<section class="bg-white rounded-xl shadow-card border border-emerald-100 flex-1 flex flex-col overflow-hidden" data-purpose="top-early-arrivals-card">
+<!-- Sub-header -->
+<div class="bg-gradient-to-r from-alfalah-dark to-alfalah-primary px-3.5 py-2 text-white flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-4 h-4 text-amber-300" fill="currentColor" viewbox="0 0 20 20">
+<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+</svg>
+<h2 class="text-xs md:text-sm font-bold tracking-wide uppercase">Top 5 Presensi Terpagi Hari Ini</h2>
+</div>
+<span class="text-[11px] font-bold text-amber-300 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-500/30">
+            Apresiasi Disiplin
+          </span>
+</div>
+<!-- Top 5 List items styled identically to Reference Photo cards -->
+<div class="p-2.5 flex-1 flex flex-col justify-between gap-1.5 bg-gradient-to-b from-white to-emerald-50/20">
+<!-- Rank 1 -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/70 transition shadow-sm">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white font-bold text-xs flex items-center justify-center shadow">
+                1
+              </span>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-800 truncate">Ust. Bambang Agus Sumantri, M.Pd.</p>
+<p class="text-[10px] text-emerald-800 font-medium">Guru PAI &amp; Bahasa Arab</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<span class="text-xs font-mono font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 shadow-sm">
+                05:51:02
+              </span>
+<span class="text-[10px] font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded">
+                Tepat
+              </span>
+</div>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:bg-emerald-50 transition shadow-sm">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
+                2
+              </span>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-800 truncate">Usth. Nurul Salsabila, S.Pd.</p>
+<p class="text-[10px] text-slate-500 font-medium">Guru Matematika</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                06:04:19
+              </span>
+<span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                Tepat
+              </span>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:bg-emerald-50 transition shadow-sm">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded-full bg-amber-700/20 text-amber-800 font-bold text-xs flex items-center justify-center">
+                3
+              </span>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-800 truncate">Ust. Moch. Faizal Khoirul Choma'ah</p>
+<p class="text-[10px] text-slate-500 font-medium">Waka Kesiswaan &amp; Guru PJOK</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                06:09:44
+              </span>
+<span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                Tepat
+              </span>
+</div>
+</div>
+<!-- Rank 4 -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:bg-emerald-50 transition">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center">
+                4
+              </span>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-800 truncate">Ust. Bagus Galuh Prasetyo, S.Kom.</p>
+<p class="text-[10px] text-slate-500 font-medium">Kepala Lab Komputer &amp; TIK</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                06:11:30
+              </span>
+<span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                Tepat
+              </span>
+</div>
+</div>
+<!-- Rank 5 -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:bg-emerald-50 transition">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center">
+                5
+              </span>
+<div class="truncate">
+<p class="text-xs font-bold text-slate-800 truncate">Usth. Rina Wardani, S.Si.</p>
+<p class="text-[10px] text-slate-500 font-medium">Guru IPA &amp; Pembina Olimpiade</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0">
+<span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                06:14:05
+              </span>
+<span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                Tepat
+              </span>
+</div>
+</div>
+</div>
+<!-- Metric KPI Cards at the bottom of the left column -->
+<div class="grid grid-cols-4 gap-1.5 p-2 bg-emerald-950 text-white border-t border-emerald-700 text-center">
+<div class="p-1.5 rounded bg-emerald-900/80">
+<span class="block text-[10px] text-emerald-200">Total Guru</span>
+<span class="text-sm font-extrabold font-mono-num text-white">54</span>
+</div>
+<div class="p-1.5 rounded bg-emerald-800/80">
+<span class="block text-[10px] text-emerald-200">Hadir Tepat</span>
+<span class="text-sm font-extrabold font-mono-num text-emerald-300">42</span>
+</div>
+<div class="p-1.5 rounded bg-amber-900/60">
+<span class="block text-[10px] text-amber-200">Terlambat</span>
+<span class="text-sm font-extrabold font-mono-num text-amber-300">4</span>
+</div>
+<div class="p-1.5 rounded bg-sky-900/60">
+<span class="block text-[10px] text-sky-200">Izin / Dinas</span>
+<span class="text-sm font-extrabold font-mono-num text-sky-300">3</span>
+</div>
+</div>
+</section>
+</aside>
+<!-- END: LeftColumn -->
+<!-- BEGIN: RightColumn (Real-time Attendance Feed Table) -->
+<!-- Large high-density table exactly reflecting the photo's live monitoring view -->
+<section class="lg:col-span-7 bg-white rounded-xl shadow-card border border-emerald-100 flex flex-col overflow-hidden" data-purpose="attendance-feed-card">
+<!-- Table Header & Filter Bar in SMP Al Falah Assalam Deep Green tone -->
+<div class="bg-gradient-to-r from-alfalah-dark via-alfalah-primary to-alfalah-emerald px-4 py-2.5 text-white flex flex-wrap items-center justify-between gap-2 border-b-2 border-alfalah-gold">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+<h2 class="text-sm md:text-base font-bold tracking-wide uppercase">
+              Daftar Presensi Guru &amp; Karyawan (Live Feed)
+            </h2>
+</div>
+<p class="text-[11px] text-emerald-200">
+            Diperbarui secara otomatis tiap detik • Sesi Presensi Kedatangan
+          </p>
+</div>
+<!-- Quick Summary Badge inside Header Bar -->
+<div class="flex items-center gap-2 text-xs">
+<span class="bg-black/30 text-emerald-200 px-2.5 py-1 rounded border border-emerald-500/30">
+            Terdata: <strong class="text-white font-mono">49 / 54</strong> Pegawai
+          </span>
+</div>
+</div>
+<!-- Live Attendance Table Container with optimized scrolling -->
+<div class="flex-1 overflow-y-auto max-h-[560px] table-scrollbar">
+<table class="w-full text-left text-xs border-collapse">
+<!-- Sticky Table Head -->
+<thead class="sticky top-0 bg-[#eef7f1] text-emerald-950 font-bold border-b border-emerald-200 shadow-sm uppercase tracking-wider text-[11px] z-10">
+<tr>
+<th class="py-2.5 px-3 w-10 text-center" scope="col">No</th>
+<th class="py-2.5 px-3" scope="col">Nama Guru / Karyawan</th>
+<th class="py-2.5 px-3 text-center" scope="col">Jam Masuk</th>
+<th class="py-2.5 px-3 text-center" scope="col">Jam Pulang</th>
+<th class="py-2.5 px-3 text-center" scope="col">Keterangan</th>
+</tr>
+</thead>
+<!-- Table Body with realistic Al Falah Assalam teachers/staff records -->
+<tbody class="divide-y divide-emerald-100 font-medium text-slate-700">
+<!-- Row 1 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">01</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Bambang Agus Sumantri, M.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19820412 201001 1 004 • PAI</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">05:51:02</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-emerald-50/80 transition bg-[#fafdfb]">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">02</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Nurul Salsabila, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19890815 201402 2 003 • Matematika</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:04:19</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">03</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Moch. Faizal Khoirul Choma'ah, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19910521 201601 1 002 • PJOK</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:09:44</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-emerald-50/80 transition bg-[#fafdfb]">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">04</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Bagus Galuh Prasetyo, S.Kom.</div>
+<div class="text-[10px] text-slate-500">NIP. 19931102 201803 1 007 • TIK / IT Staff</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:11:30</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">05</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Rina Wardani, S.Si.</div>
+<div class="text-[10px] text-slate-500">NIP. 19860314 201101 2 005 • IPA Terpadu</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:14:05</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-emerald-50/80 transition bg-[#fafdfb]">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">06</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Ahmad Fauzi Ramadhan, M.Pd.I.</div>
+<div class="text-[10px] text-slate-500">NIP. 19840210 200902 1 001 • Al-Qur'an &amp; Hadist</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:17:50</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">07</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Siti Nur Khasanah, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19871109 201201 2 006 • Bahasa Indonesia</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:22:11</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="hover:bg-emerald-50/80 transition bg-[#fafdfb]">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">08</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. M. Hidayatulloh, S.Hum.</div>
+<div class="text-[10px] text-slate-500">NIP. 19900128 201503 1 005 • Bahasa Inggris</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:25:34</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 9 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">09</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Dian Putri Rahmawati, S.E.</div>
+<div class="text-[10px] text-slate-500">NIP. 19920619 201701 2 004 • Bendahara &amp; TU</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:29:18</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 10 (Late sample matching reference data format) -->
+<tr class="hover:bg-amber-50/80 transition bg-amber-50/30">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">10</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Dedi Kurniawan, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19850912 201103 1 003 • IPS Terpadu</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-amber-700">07:04:12</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                  ▲ Terlambat (4m)
+                </span>
+</td>
+</tr>
+<!-- Row 11 (Late sample) -->
+<tr class="hover:bg-amber-50/80 transition bg-amber-50/30">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">11</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Wahyu Tri Atmojo, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19940325 201901 1 008 • Seni Budaya</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-amber-700">07:08:45</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                  ▲ Terlambat (8m)
+                </span>
+</td>
+</tr>
+<!-- Row 12 (Official Duty / Dinas Luar) -->
+<tr class="hover:bg-blue-50/80 transition bg-blue-50/20">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">12</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Dr. H. M. Ridwan, M.Pd.I.</div>
+<div class="text-[10px] text-slate-500">NIP. 19760701 200201 1 001 • Kepala Sekolah</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-sky-700">06:30:00</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                  ★ Dinas Luar (Diknas)
+                </span>
+</td>
+</tr>
+<!-- Row 13 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">13</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Fitriani Nurlita, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19950114 202002 2 009 • Bimbingan Konseling</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:34:10</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 14 -->
+<tr class="hover:bg-emerald-50/80 transition bg-[#fafdfb]">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">14</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Ust. Rahmat Hidayat, A.Md.</div>
+<div class="text-[10px] text-slate-500">NIP. 19881203 201301 1 006 • Koord. Sarpras</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:38:22</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+<!-- Row 15 -->
+<tr class="hover:bg-emerald-50/80 transition bg-white">
+<td class="py-2 px-3 text-center font-mono text-slate-400 text-[11px]">15</td>
+<td class="py-2 px-3">
+<div class="font-bold text-slate-900">Usth. Zelda Syahrani, S.Pd.</div>
+<div class="text-[10px] text-slate-500">NIP. 19960718 202103 2 011 • Guru IPA</div>
+</td>
+<td class="py-2 px-3 text-center font-mono font-bold text-emerald-700">06:41:04</td>
+<td class="py-2 px-3 text-center font-mono text-slate-400">--:--:--</td>
+<td class="py-2 px-3 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  ● Tepat Waktu
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Mini Status -->
+<div class="bg-emerald-50 px-4 py-2 border-t border-emerald-200 flex flex-wrap items-center justify-between text-[11px] text-emerald-900">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> <strong>42</strong> Tepat Waktu
+          </span>
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> <strong>4</strong> Terlambat
+          </span>
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> <strong>3</strong> Dinas Luar
+          </span>
+</div>
+<div class="text-slate-500 font-medium">
+          Menampilkan 15 data presensi terkini
+        </div>
+</div>
+</section>
+<!-- END: RightColumn -->
+</main>
+<!-- END: MainContentGrid -->
+<!-- BEGIN: BottomNotificationMarquee -->
+<!-- Redesigned footer bar based on the red banner from the reference monitor image, re-themed in Al Falah Green/Gold identity -->
+<footer class="bg-gradient-to-r from-alfalah-dark via-[#094226] to-alfalah-dark rounded-xl border border-alfalah-gold/50 text-white py-2 px-3 shadow-lg flex items-center overflow-hidden">
+<!-- Announcement Label Badge -->
+<div class="flex items-center gap-1.5 bg-amber-500 text-slate-950 font-extrabold text-[11px] uppercase tracking-wider px-3 py-1 rounded shadow flex-shrink-0 z-10">
+<svg class="w-4 h-4 text-slate-950 animate-bounce" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>INFO PENTING</span>
+</div>
+<!-- Scrolling Announcement Marquee -->
+<div class="overflow-hidden whitespace-nowrap ml-3 w-full">
+<div class="animate-ticker text-xs font-semibold text-emerald-100 tracking-wide">
+<span class="mx-4 flex items-center gap-2">
+          🔔 <span class="text-amber-300 font-bold">Batas Akhir Presensi Masuk:</span> Pukul 07.00 WIB. Sholat Dhuha Berjamaah dimulai tepat pukul 07.15 WIB di Masjid Assalam Tropodo.
+        </span>
+<span class="mx-4 flex items-center gap-2">
+          📞 <span class="text-amber-300 font-bold">Kendala Presensi / Izin Dinas:</span> Silahkan konfirmasi ke Bagian SDM &amp; Tata Usaha (Ust. Dwi Wahyono - 0812-3456-xxxx).
+        </span>
+<span class="mx-4 flex items-center gap-2">
+          🌿 <span class="text-amber-300 font-bold">Visi Sekolah:</span> Berakhlak Mulia, Berprestasi Optimal, Berwawasan Global bersama SMP Al Falah Assalam Tropodo.
+        </span>
+<!-- Duplicated content for seamless infinite looping -->
+<span class="mx-4 flex items-center gap-2">
+          🔔 <span class="text-amber-300 font-bold">Batas Akhir Presensi Masuk:</span> Pukul 07.00 WIB. Sholat Dhuha Berjamaah dimulai tepat pukul 07.15 WIB di Masjid Assalam Tropodo.
+        </span>
+<span class="mx-4 flex items-center gap-2">
+          📞 <span class="text-amber-300 font-bold">Kendala Presensi / Izin Dinas:</span> Silahkan konfirmasi ke Bagian SDM &amp; Tata Usaha (Ust. Dwi Wahyono - 0812-3456-xxxx).
+        </span>
+<span class="mx-4 flex items-center gap-2">
+          🌿 <span class="text-amber-300 font-bold">Visi Sekolah:</span> Berakhlak Mulia, Berprestasi Optimal, Berwawasan Global bersama SMP Al Falah Assalam Tropodo.
+        </span>
+</div>
+</div>
+</footer>
+<!-- END: BottomNotificationMarquee -->
+<!-- BEGIN: ClientClockScript -->
+<!-- JavaScript to keep LCD monitor real-time clock and dynamic QR token bar ticking -->
+<script data-purpose="live-clock-and-token-simulation">
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Live Real-Time Indonesian Clock
+      const clockEl = document.getElementById('live-clock-header');
+      const dateEl = document.getElementById('live-date-header');
+      
+      const hariNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const bulanNames = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+
+      function updateClock() {
+        const now = new Date();
+        const hari = hariNames[now.getDay()];
+        const tanggal = now.getDate();
+        const bulan = bulanNames[now.getMonth()];
+        const tahun = now.getFullYear();
+
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+
+        if (dateEl) {
+          dateEl.textContent = `${hari}, ${tanggal} ${bulan} ${tahun}`;
+        }
+        if (clockEl) {
+          clockEl.innerHTML = `${hh}:${mm}:${ss} <span class="text-xs font-sans text-emerald-200">WIB</span>`;
+        }
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // 2. Dynamic QR Token Countdown simulation (15 seconds rotation)
+      const countdownEl = document.getElementById('qr-countdown');
+      const progressBarEl = document.getElementById('qr-progress-bar');
+      let countdown = 15;
+
+      setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          countdown = 15;
+        }
+        if (countdownEl) {
+          countdownEl.textContent = `${countdown} Detik`;
+        }
+        if (progressBarEl) {
+          const percent = (countdown / 15) * 100;
+          progressBarEl.style.width = `${percent}%`;
+        }
+      }, 1000);
+    });
+  </script>
+<!-- END: ClientClockScript -->
+</body></html>

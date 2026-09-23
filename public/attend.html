@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Proses Absensi - SMP Al Falah Assalam</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/scan.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0a3d24 0%, #051a0f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .attend-card {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 36px 28px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+      border: 2px solid #D4AF37;
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #E2E8F0;
+      border-top-color: #10B981;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="attend-card" id="attendCard">
+    <div id="loadingState">
+      <div class="spinner"></div>
+      <h3 style="font-size: 1.2rem; font-weight: 800; color: #0a3d24; margin-bottom: 8px;">Memproses Absensi...</h3>
+      <p style="font-size: 0.85rem; color: #64748b;">Memvalidasi token QR dan sesi identitas karyawan Anda ke server.</p>
+    </div>
+
+    <div id="contentState" style="display: none;">
+      <div id="cardIcon" class="result-icon-circle">✓</div>
+      <h2 id="cardTitle" class="result-title">ABSENSI BERHASIL</h2>
+      <div id="cardName" class="result-name">--</div>
+      <div id="cardTime" class="result-time-badge font-mono">--:--:--</div>
+      <div>
+        <span id="cardStatus" class="result-status-tag status-on-time">✓ TEPAT WAKTU</span>
+      </div>
+      <p id="cardMessage" style="font-size: 0.85rem; color: #64748b; margin-bottom: 24px; line-height: 1.5;"></p>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="/" class="btn btn-primary" style="width: 100%;">
+          Ke Halaman Utama
+        </a>
+        <a href="/scan" class="btn btn-outline" style="width: 100%;">
+          Buka Web Scanner
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function processAttendanceFromUrl() {
+      // Ambil token dari URL: /a/:token
+      const pathParts = window.location.pathname.split('/a/');
+      const token = pathParts[1] ? pathParts[1].split('?')[0].trim() : null;
+
+      if (!token) {
+        renderError('TOKEN HILANG', 'URL tidak memuat token QR yang valid.', 'Gagal');
+        return;
+      }
+
+      // 1. Cek sesi login karyawan (Bab 8)
+      try {
+        const authRes = await fetch('/api/auth/me');
+        const authData = await authRes.json();
+
+        if (!authData.success || !authData.user) {
+          // Bab 8: Sesi tidak ditemukan -> Redirect ke Login
+          sessionStorage.setItem('pending_qr_token', token);
+          window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+          return;
+        }
+
+        const user = authData.user;
+
+        // 2. Tentukan apakah check-in atau check-out berdasarkan jam server
+        // Default coba check-in; jika ditolak karena sudah check-in dan >= 16:00, coba check-out
+        let attRes = await fetch('/api/attendance/check-in', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+
+        let attData = await attRes.json();
+
+        // Jika error karena tipe token adalah CHECK_OUT, kirim ke check-out
+        if (!attData.success && attData.message && attData.message.includes('Absen Pulang')) {
+          attRes = await fetch('/api/attendance/check-out', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          });
+          attData = await attRes.json();
+        }
+
+        if (attData.success) {
+          const att = attData.attendance;
+          const isCheckout = Boolean(att.check_out_time);
+          const time = isCheckout ? att.check_out_time : att.check_in_time;
+          const isLate = att.status === 'LATE';
+
+          renderSuccess({
+            title: isCheckout ? 'ABSENSI PULANG BERHASIL' : 'ABSENSI MASUK BERHASIL',
+            name: att.employee_name || user.name,
+            time: time,
+            statusText: isCheckout ? '✓ PULANG TERCATAT' : (isLate ? '⚠ TERLAMBAT' : '✓ TEPAT WAKTU'),
+            statusClass: isCheckout ? 'status-on-time' : (isLate ? 'status-late' : 'status-on-time'),
+            iconText: isLate ? '⚠' : '✓',
+            message: attData.message
+          });
+        } else {
+          renderError('ABSENSI DITOLAK', attData.message, user.name);
+        }
+
+      } catch (err) {
+        renderError('GANGGUAN KONEKSI', 'Terjadi kesalahan saat memproses absensi: ' + err.message, 'Gagal');
+      }
+    }
+
+    function renderSuccess({ title, name, time, statusText, statusClass, iconText, message }) {
+      document.getElementById('loadingState').style.display = 'none';
+      const content = document.getElementById('contentState');
+      content.style.display = 'block';
+
+      document.getElementById('cardIcon').textContent = iconText;
+      document.getElementById('cardIcon').style.background = statusClass === 'status-late' ? '#FEF3C7' : '#DCFCE7';
+      document.getElementById('cardIcon').style.color = statusClass === 'status-late' ? '#B45309' : '#15803D';
+      document.getElementById('cardTitle').textContent = title;
+      document.getElementById('cardName').textContent = name;
+      document.getElementById('cardTime').textContent = time;
+      
+      const statusEl = document.getElementById('cardStatus');
+      statusEl.className = `result-status-tag ${statusClass}`;
+      statusEl.textContent = statusText;
+
+      document.getElementById('cardMessage').textContent = message;
+    }
+
+    function renderError(title, message, name) {
+      document.getElementById('loadingState').style.display = 'none';
+      const content = document.getElementById('contentState');
+      content.style.display = 'block';
+
+      document.getElementById('cardIcon').textContent = '✕';
+      document.getElementById('cardIcon').style.background = '#FEE2E2';
+      document.getElementById('cardIcon').style.color = '#B91C1C';
+      document.getElementById('cardTitle').textContent = title;
+      document.getElementById('cardName').textContent = name;
+      document.getElementById('cardTime').textContent = '--:--';
+      
+      const statusEl = document.getElementById('cardStatus');
+      statusEl.className = 'result-status-tag status-error';
+      statusEl.textContent = '❌ Ditolak';
+
+      document.getElementById('cardMessage').textContent = message;
+    }
+
+    window.addEventListener('DOMContentLoaded', processAttendanceFromUrl);
+  </script>
+</body>
+</html>

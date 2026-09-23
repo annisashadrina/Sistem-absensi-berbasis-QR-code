@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --primary-dark: #0a3d24;
+  --primary-base: #0F5132;
+  --primary-light: #166534;
+  --primary-accent: #198754;
+  --primary-surface: #F4F9F5;
+  --primary-border: #BDE3C9;
+
+  --gold: #D4AF37;
+  --gold-light: #FBBF24;
+  --gold-surface: #FFFBEB;
+
+  --danger: #DC2626;
+  --danger-surface: #FEF2F2;
+  --danger-border: #FECACA;
+
+  --success: #16A34A;
+  --success-surface: #F0FDF4;
+
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-500: #64748B;
+  --gray-700: #334155;
+  --gray-900: #0F172A;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 4px rgba(10, 61, 36, 0.04);
+  --shadow-md: 0 6px 16px rgba(10, 61, 36, 0.08);
+  --shadow-lg: 0 16px 36px rgba(10, 61, 36, 0.12);
+  --shadow-screen: 0 20px 40px -15px rgba(10, 61, 36, 0.25);
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--primary-surface);
+  color: var(--gray-900);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(189, 227, 201, 0.6);
+  border-radius: var(--radius-md);
+}
+
+.glass-panel-dark {
+  background: rgba(10, 61, 36, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+}
+
+/* Button System */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-base), var(--primary-dark));
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 81, 50, 0.25);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-base));
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 81, 50, 0.35);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #ffffff;
+}
+
+.btn-accent:hover {
+  background: #059669;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--primary-base);
+  color: var(--primary-base);
+}
+
+.btn-outline:hover {
+  background: var(--primary-surface);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-on-time {
+  background-color: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+}
+
+.badge-late {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FCD34D;
+}
+
+.badge-absent {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FCA5A5;
+}
+
+.badge-completed {
+  background-color: #E0E7FF;
+  color: #3730A3;
+  border: 1px solid #A5B4FC;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(15, 81, 50, 0.2);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 81, 50, 0.4);
+}

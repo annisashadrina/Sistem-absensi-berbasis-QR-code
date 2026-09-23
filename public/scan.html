@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Web Scanner Absensi - Karyawan</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/scan.css">
+</head>
+<body class="scanner-page">
+
+  <!-- Header -->
+  <header class="scanner-header">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="/" style="color: #9fe1b8; text-decoration: none; font-size: 1.2rem;">&larr;</a>
+      <h1 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">Web QR Scanner</h1>
+    </div>
+    <div style="font-size: 0.8rem; color: #9fe1b8;">
+      SMP Al Falah
+    </div>
+  </header>
+
+  <!-- User Session Info Bar (Bab 8) -->
+  <div id="sessionBar" class="user-badge-bar">
+    <div class="user-badge-info">
+      <div id="userAvatar" class="user-avatar">?</div>
+      <div class="user-details">
+        <h4 id="userName">Memeriksa sesi login...</h4>
+        <p id="userSub">Mohon tunggu</p>
+      </div>
+    </div>
+    <div id="sessionAction">
+      <!-- Diisi oleh scan.js: Tombol Login atau Logout -->
+    </div>
+  </div>
+
+  <!-- Warning jika belum login -->
+  <div id="loginWarningAlert" style="display:none; background:#7f1d1d; color:#fecaca; padding:12px 20px; font-size:0.85rem; border-bottom:1px solid #991b1b; text-align:center;">
+    ⚠️ Anda belum login. Silakan <a href="/login?redirect=/scan" style="color:#ffffff; font-weight:700; text-decoration:underline;">Login di sini</a> sebelum melakukan absensi.
+  </div>
+
+  <!-- Main Viewport -->
+  <main class="scanner-viewport-wrapper">
+
+    <!-- Mode Absensi: Masuk vs Pulang -->
+    <div class="scan-mode-tabs">
+      <button id="btnModeCheckIn" class="mode-tab-btn active" onclick="setScanMode('CHECK_IN')">
+        ☀️ Absen Masuk
+      </button>
+      <button id="btnModeCheckOut" class="mode-tab-btn" onclick="setScanMode('CHECK_OUT')">
+        🌙 Absen Pulang
+      </button>
+    </div>
+
+    <!-- Camera Video Box -->
+    <div class="camera-container" id="cameraContainer">
+      <video id="cameraVideo" playsinline autoplay muted></video>
+      <canvas id="cameraCanvas" style="display:none;"></canvas>
+
+      <div class="scan-reticle">
+        <div class="scan-laser"></div>
+      </div>
+
+      <div id="cameraStatusText" style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.8); background:rgba(0,0,0,0.5); padding:4px;">
+        Arahkan kamera ke QR Code monitor
+      </div>
+    </div>
+
+    <!-- Tombol Kontrol Kamera -->
+    <div style="display:flex; gap:12px; margin-top:14px;">
+      <button id="btnStartCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px;">
+        📷 Buka Kamera
+      </button>
+      <button id="btnSwitchCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px;">
+        🔄 Balik Kamera
+      </button>
+    </div>
+
+    <!-- Input Manual Token (Sangat praktis untuk pengujian simulasi tanpa kamera) -->
+    <div class="manual-input-box">
+      <h5>⌨️ Uji Token Manual (Simulasi Scan)</h5>
+      <div class="manual-input-flex">
+        <input type="text" id="manualTokenInput" placeholder="Tempel token QR di sini...">
+        <button id="btnSubmitManualToken" class="btn btn-accent" style="padding:8px 14px; font-size:0.85rem;">
+          Absen
+        </button>
+      </div>
+      <div style="font-size:0.72rem; color:#94a3b8; margin-top:6px;">
+        *Tips: Salin token dari layar monitor atau gunakan kamera.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal Hasil Absensi (Bab 13) -->
+  <div id="resultModal" class="result-modal-overlay">
+    <div id="resultCard" class="result-card success">
+      <div id="resultIcon" class="result-icon-circle">✓</div>
+      <h3 id="resultTitle" class="result-title">ABSENSI BERHASIL</h3>
+      <div id="resultName" class="result-name">BUDI SANTOSO</div>
+      <div id="resultTime" class="result-time-badge font-mono">07:52:14</div>
+      <div id="resultStatusTag" class="result-status-tag status-on-time">✓ TEPAT WAKTU</div>
+      <p id="resultMessage" style="font-size:0.85rem; color:#64748b; margin-bottom:20px;"></p>
+      <button id="btnCloseModal" class="btn btn-primary" style="width:100%;">
+        Tutup & Selesai
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/scan.js"></script>
+</body>
+</html>
