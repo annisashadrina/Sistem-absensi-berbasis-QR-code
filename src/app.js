@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import path from 'path';
@@ -8,6 +9,7 @@ import authRouter from './routes/auth.js';
 import qrRouter from './routes/qr.js';
 import attendanceRouter from './routes/attendance.js';
 import adminRouter from './routes/admin.js';
+import adminEmployeesRouter from './routes/adminEmployees.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +32,10 @@ app.use('/api/qr', qrRouter);
 app.use('/api/attendance', attendanceRouter);
 app.use('/api/admin', adminRouter);
 
+// CRUD API Guru dan Pegawai.
+// Route ini memiliki middleware requireAdmin sendiri.
+app.use('/api/admin/employees', adminEmployeesRouter);
+
 // Frontend Page Routing
 app.get('/display', (req, res) => {
   res.sendFile(path.join(publicDir, 'display.html'));
@@ -47,15 +53,12 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(publicDir, 'admin.html'));
 });
 
-// Bab 7 & 8: Scan Kamera HP Bawaan (/a/:token)
+// Scan QR melalui kamera HP (/a/:token)
 app.get('/a/:token', (req, res) => {
-  // Sajikan attend.html yang secara otomatis mengecek session
-  // Jika sudah login -> langsung proses absensi
-  // Jika belum -> redirect ke login dengan return url
   res.sendFile(path.join(publicDir, 'attend.html'));
 });
 
-// Default Fallback
+// Default fallback
 app.use((req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
