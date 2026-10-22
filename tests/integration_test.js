@@ -17,6 +17,7 @@ const PORT = 3099;
 const BASE_URL = `http://localhost:${PORT}`;
 
 let server;
+let db;
 let cookieBudi = '';
 let cookieAdmin = '';
 let testEmployeeId = null;
@@ -85,7 +86,7 @@ async function runTests() {
   console.log('PENGUJIAN INTEGRASI SISTEM ABSENSI + CRUD KARYAWAN');
   console.log('========================================================\n');
 
-  await getDb();
+db = await getDb();
 
   server = app.listen(PORT);
 
@@ -708,9 +709,20 @@ async function runTests() {
     }
 
     if (server) {
-      await new Promise((resolve) => {
-        server.close(resolve);
+      await new Promise((resolve, reject) => {
+        server.close((error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
       });
+    }
+
+    if (db?.close) {
+    await db.close();
+    console.log('Koneksi database berhasil ditutup.');
     }
 
     console.log('\n========================================================');
