@@ -10,12 +10,15 @@ export async function purgeExpiredQrTokens(
 ) {
   const db = await getDb();
   const result = await db.query(
-    `DELETE FROM qr_tokens
-     WHERE expires_at < CURRENT_TIMESTAMP - make_interval(days => $1::int)`,
+    `WITH deleted AS (
+       DELETE FROM qr_tokens
+       WHERE expires_at < CURRENT_TIMESTAMP - make_interval(days => $1::int)
+       RETURNING 1
+     )
+     SELECT COUNT(*)::int AS total FROM deleted`,
     [retentionDays],
   );
-  // PGlite memakai affectedRows, driver pg memakai rowCount.
-  return result.affectedRows ?? result.rowCount ?? 0;
+  return Number(result.rows[0]?.total ?? 0);
 }
 
 /**

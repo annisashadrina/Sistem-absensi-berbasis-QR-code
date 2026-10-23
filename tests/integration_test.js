@@ -835,8 +835,8 @@ async function runTests() {
       );
 
       try {
+        // <- GANTI mulai dari sini
         const deleted = await purgeExpiredQrTokens(3);
-        assert(deleted >= 1, "Minimal 1 token lama harus terhapus");
 
         const oldRows = await db.query(
           "SELECT id FROM qr_tokens WHERE token_hash = $1",
@@ -849,6 +849,7 @@ async function runTests() {
 
         assert(oldRows.rows.length === 0, "Token lama harus sudah terhapus");
         assert(newRows.rows.length === 1, "Token baru harus tetap ada");
+        assert(deleted >= 1, `Jumlah terhapus harus >= 1, dapat ${deleted}`);
       } finally {
         await db.query("DELETE FROM qr_tokens WHERE token_hash = $1", [
           newHash,
