@@ -82,3 +82,23 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
 CREATE INDEX IF NOT EXISTS idx_audit_employee ON audit_logs(employee_id);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at);
+
+-- 7. Tabel Leave Requests (Pengajuan Izin / Sakit / Cuti)
+CREATE TABLE IF NOT EXISTS leave_requests (
+    id SERIAL PRIMARY KEY,
+    employee_id INT NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+    leave_type VARCHAR(20) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    reason TEXT,
+    attachment_path VARCHAR(255),
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    reviewed_by INT REFERENCES employees(id) ON DELETE SET NULL,
+    reviewed_at TIMESTAMP WITH TIME ZONE,
+    review_note TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_leave_dates CHECK (end_date >= start_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_leave_employee ON leave_requests(employee_id);
+CREATE INDEX IF NOT EXISTS idx_leave_status ON leave_requests(status);
