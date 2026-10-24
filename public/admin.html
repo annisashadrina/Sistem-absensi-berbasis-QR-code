@@ -39,14 +39,30 @@
   <main class="admin-container">
 
     <!-- Tab Navigasi -->
-    <div class="admin-tab-nav">
-      <button class="tab-btn active" id="tabBtnAttendance" onclick="switchTab('attendance')">
-        📋 Rekap & Monitoring Absensi
-      </button>
-      <button class="tab-btn" id="tabBtnAudit" onclick="switchTab('audit')">
-        🛡️ Log Audit Keamanan & Deteksi
-      </button>
-    </div>
+
+<!-- Tab Navigasi -->
+<div class="admin-tab-nav">
+  <button class="tab-btn active" id="tabBtnAttendance"
+    onclick="switchTab('attendance')">
+    📋 Rekap & Monitoring Absensi
+  </button>
+
+  <button class="tab-btn" id="tabBtnEmployees"
+    onclick="switchTab('employees')">
+    👥 Manajemen Guru/Karyawan
+  </button>
+
+  <button class="tab-btn" id="tabBtnLeave"
+    onclick="switchTab('leave')">
+    📝 Verifikasi Izin/Sakit
+  </button>
+
+  <button class="tab-btn" id="tabBtnAudit"
+    onclick="switchTab('audit')">
+    🛡️ Log Audit Keamanan & Deteksi
+  </button>
+</div>
+
 
     <!-- TAB 1: KONTEN REKAP ABSENSI -->
     <div id="tabContentAttendance">
@@ -89,47 +105,117 @@
         </div>
       </div>
 
-      <!-- Bab 22: Filter Dashboard -->
-      <div class="admin-toolbar-card">
-        <div class="toolbar-flex">
-          <div class="filter-group">
-            <label class="filter-label" for="filterDate">Tanggal Kehadiran</label>
-            <input type="date" id="filterDate" class="filter-control">
-          </div>
 
-          <div class="filter-group">
-            <label class="filter-label" for="filterDepartment">Departemen / Unit</label>
-            <select id="filterDepartment" class="filter-control">
-              <option value="">Semua Departemen</option>
-            </select>
-          </div>
+<!-- Bab 22: Filter Dashboard -->
 
-          <div class="filter-group">
-            <label class="filter-label" for="filterStatus">Status Kehadiran</label>
-            <select id="filterStatus" class="filter-control">
-              <option value="">Semua Status</option>
-              <option value="ON_TIME">Tepat Waktu (ON_TIME)</option>
-              <option value="LATE">Terlambat (LATE)</option>
-              <option value="COMPLETED">Sudah Pulang (COMPLETED)</option>
-              <option value="ABSENT">Belum Absen (ABSENT)</option>
-            </select>
-          </div>
+<p style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;">
+  Ringkasan metrik mengikuti tanggal akhir yang dipilih.
+  Tabel di bawah menampilkan data sesuai rentang tanggal.
+</p>
 
-          <div class="filter-group" style="flex: 1; min-width: 200px;">
-            <label class="filter-label" for="filterSearch">Cari Nama / NIK</label>
-            <input type="text" id="filterSearch" class="filter-control" placeholder="Ketik nama atau NIK...">
-          </div>
+<div class="admin-toolbar-card">
+  <div class="toolbar-flex">
 
-          <div style="display: flex; gap: 8px;">
-            <button onclick="applyFilters()" class="btn btn-primary" style="padding: 8px 18px;">
-              🔍 Cari
-            </button>
-            <button onclick="exportToCSV()" class="btn btn-outline" style="padding: 8px 14px;">
-              📥 Ekspor CSV
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- Filter Rentang Tanggal: BAGIAN BARU -->
+    <div class="filter-group">
+      <label class="filter-label" for="filterStartDate">
+        Tanggal Awal
+      </label>
+      <input
+        type="date"
+        id="filterStartDate"
+        class="filter-control"
+      >
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label" for="filterEndDate">
+        Tanggal Akhir
+      </label>
+      <input
+        type="date"
+        id="filterEndDate"
+        class="filter-control"
+      >
+    </div>
+
+    <!-- Filter Departemen: DIPERTAHANKAN -->
+    <div class="filter-group">
+      <label class="filter-label" for="filterDepartment">
+        Departemen / Unit
+      </label>
+      <select id="filterDepartment" class="filter-control">
+        <option value="">Semua Departemen</option>
+      </select>
+    </div>
+
+    <!-- Filter Status: DIPERTAHANKAN -->
+    <div class="filter-group">
+      <label class="filter-label" for="filterStatus">
+        Status Kehadiran
+      </label>
+      <select id="filterStatus" class="filter-control">
+        <option value="">Semua Status</option>
+        <option value="ON_TIME">Tepat Waktu (ON_TIME)</option>
+        <option value="LATE">Terlambat (LATE)</option>
+        <option value="COMPLETED">Sudah Pulang (COMPLETED)</option>
+        <option value="ABSENT">Belum Absen (ABSENT)</option>
+      </select>
+    </div>
+
+    <!-- Pencarian: DIPERTAHANKAN -->
+    <div class="filter-group" style="flex: 1; min-width: 200px;">
+      <label class="filter-label" for="filterSearch">
+        Cari Nama / NIK
+      </label>
+      <input
+        type="text"
+        id="filterSearch"
+        class="filter-control"
+        placeholder="Ketik nama atau NIK..."
+      >
+    </div>
+
+    <!-- Tombol: DIPERTAHANKAN -->
+    <div style="display: flex; gap: 8px;">
+      <button
+        onclick="applyFilters()"
+        class="btn btn-primary"
+        style="padding: 8px 18px;"
+      >
+        🔍 Cari
+      </button>
+
+
+<button
+  onclick="exportToPDF()"
+  class="btn btn-outline"
+  style="padding: 8px 14px;"
+>
+  📄 Ekspor PDF
+</button>
+
+<button
+  onclick="exportToExcel()"
+  class="btn btn-outline"
+  style="padding: 8px 14px;"
+>
+  📊 Ekspor Excel
+</button>
+
+<button
+  onclick="exportToCSV()"
+  class="btn btn-outline"
+  style="padding: 8px 14px;"
+>
+  📥 Ekspor CSV
+</button>
+
+    </div>
+
+  </div>
+</div>
+
 
       <!-- Bab 21: Tabel Absensi -->
       <div class="data-table-card">
@@ -140,9 +226,11 @@
 
         <div class="table-responsive">
           <table class="custom-table">
-            <thead>
-              <tr>
+
+        <thead>
+            <tr>
                 <th>NIK</th>
+                <th>Tanggal</th>
                 <th>Nama Karyawan</th>
                 <th>Departemen</th>
                 <th>Jabatan</th>
@@ -150,11 +238,12 @@
                 <th>Status Masuk</th>
                 <th>Check-Out</th>
                 <th>Status Akhir</th>
-              </tr>
-            </thead>
+            </tr>
+        </thead>
+
             <tbody id="attendanceTableBody">
               <tr>
-                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 28px;">
+                <td colspan="9" style="text-align: center; color: #94a3b8; padding: 28px;">
                   Memuat data absensi...
                 </td>
               </tr>
@@ -163,6 +252,166 @@
         </div>
       </div>
     </div>
+
+
+<!-- TAB: MANAJEMEN GURU/KARYAWAN -->
+<div id="tabContentEmployees" style="display: none;">
+  <div class="admin-toolbar-card">
+    <div class="toolbar-flex">
+      <div class="filter-group" style="flex: 1; min-width: 220px;">
+        <label class="filter-label" for="employeeSearch">
+          Cari Guru/Karyawan
+        </label>
+        <input
+          type="search"
+          id="employeeSearch"
+          class="filter-control"
+          placeholder="Cari nama, NIP, atau email..."
+        >
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="employeeStatus">
+          Status Akun
+        </label>
+        <select id="employeeStatus" class="filter-control">
+          <option value="ACTIVE">Aktif</option>
+          <option value="INACTIVE">Nonaktif</option>
+          <option value="ALL">Semua Status</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="employeeDepartment">
+          Departemen
+        </label>
+        <select id="employeeDepartment" class="filter-control">
+          <option value="">Semua Departemen</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="loadEmployees()">
+        🔍 Cari
+      </button>
+
+      <button class="btn btn-outline" onclick="openEmployeeModal()">
+        ➕ Tambah Guru/Karyawan
+      </button>
+    </div>
+  </div>
+
+  <div class="data-table-card">
+    <div class="data-table-header">
+      <h2 style="font-size: 1.05rem; font-weight: 700; color: #0a3d24;">
+        Daftar Guru & Karyawan
+      </h2>
+      <span id="employeeRecordCount" class="badge"
+        style="background: #F1F5F9; color: #475569;">
+        0 Karyawan
+      </span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>NIP</th>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Departemen</th>
+            <th>Jabatan</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+          <tr>
+            <td colspan="7"
+              style="text-align: center; color: #94a3b8; padding: 28px;">
+              Data akan dimuat saat tab dibuka.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="employee-pagination">
+      <button id="employeePrevPage" class="btn btn-outline"
+        onclick="changeEmployeePage(-1)" disabled>
+        ← Sebelumnya
+      </button>
+      <span id="employeePageInfo">Halaman 1</span>
+      <button id="employeeNextPage" class="btn btn-outline"
+        onclick="changeEmployeePage(1)" disabled>
+        Berikutnya →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: VERIFIKASI IZIN/SAKIT -->
+<div id="tabContentLeave" style="display: none;">
+  <div class="admin-toolbar-card">
+    <div class="toolbar-flex">
+      <div class="filter-group">
+        <label class="filter-label" for="leaveStatusFilter">
+          Status Pengajuan
+        </label>
+        <select id="leaveStatusFilter" class="filter-control">
+          <option value="PENDING">Menunggu Persetujuan</option>
+          <option value="APPROVED">Disetujui</option>
+          <option value="REJECTED">Ditolak</option>
+          <option value="ALL">Semua Status</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="loadAdminLeave()">
+        🔍 Tampilkan Pengajuan
+      </button>
+    </div>
+  </div>
+
+  <div class="data-table-card">
+    <div class="data-table-header">
+      <h2 style="font-size: 1.05rem; font-weight: 700; color: #0a3d24;">
+        Pengajuan Izin, Sakit, dan Cuti
+      </h2>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+  <tr>
+    <th>NIK</th>
+    <th>Nama</th>
+    <th>Departemen</th>
+    <th>Jenis Cuti</th>
+    <th>Rentang Tanggal</th>
+    <th>Alasan</th>
+    <th>Bukti / Status</th>
+    <th>Aksi</th>
+  </tr>
+</thead>
+<tbody id="adminLeaveTableBody">
+  <tr>
+    <td colspan="8"
+      style="text-align: center; color: #94a3b8; padding: 28px;">
+      Data pengajuan akan dimuat saat tab dibuka.
+    </td>
+  </tr>
+        <tbody id="adminLeaveTableBody">
+          <tr>
+            <td colspan="7"
+              style="text-align: center; color: #94a3b8; padding: 28px;">
+              Data pengajuan akan dimuat saat tab dibuka.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 
     <!-- TAB 2: LOG AUDIT KEAMANAN (Bab 23.5 & Bab 29) -->
     <div id="tabContentAudit" style="display: none;">
@@ -203,6 +452,9 @@
 
   </main>
 
-  <script src="/js/admin.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="/js/admin.js"></script>
 </body>
 </html>

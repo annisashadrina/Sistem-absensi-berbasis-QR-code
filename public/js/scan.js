@@ -331,3 +331,276 @@ window.addEventListener('DOMContentLoaded', () => {
     startCamera();
   }
 });
+
+
+/* =====================================================
+   FITUR PENGAJUAN IZIN, SAKIT, CUTI, DAN RIWAYAT
+   ===================================================== */
+
+const employeeNavButtons = document.querySelectorAll('.employee-nav-btn');
+const employeeViews = document.querySelectorAll('.employee-view');
+
+const leaveForm = document.getElementById('leaveForm');
+const leaveTypeInput = document.getElementById('leaveType');
+const startDateInput = document.getElementById('startDate');
+const endDateInput = document.getElementById('endDate');
+const leaveAttachmentInput = document.getElementById('leaveAttachment');
+const leaveFeedback = document.getElementById('leaveFeedback');
+const btnSubmitLeave = document.getElementById('btnSubmitLeave');
+
+const historyStatus = document.getElementById('historyStatus');
+const btnRefreshHistory = document.getElementById('btnRefreshHistory');
+const historyFeedback = document.getElementById('historyFeedback');
+const leaveHistoryList = document.getElementById('leaveHistoryList');
+
+// Navigasi halaman karyawan
+employeeNavButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const targetId = button.dataset.view;
+
+    employeeNavButtons.forEach(item => {
+      item.classList.toggle('active', item === button);
+    });
+
+    employeeViews.forEach(view => {
+      const active = view.id === targetId;
+      view.classList.toggle('active', active);
+      view.hidden = !active;
+    });
+
+    // Kamera berhenti ketika berpindah ke fitur lain
+    if (targetId !== 'scannerView' && videoStream) {
+      stopCamera();
+    }
+
+    if (targetId === 'historyView') {
+      loadLeaveHistory();
+    }
+  });
+});
+
+// Pesan status
+function setLeaveFeedback(message, type = 'info') {
+  leaveFeedback.textContent = message;
+  leaveFeedback.className = `leave-feedback ${type}`;
+  leaveFeedback.hidden = false;
+}
+
+function setHistoryFeedback(message, type = 'info') {
+  historyFeedback.textContent = message;
+  historyFeedback.className = `leave-feedback ${type}`;
+  historyFeedback.hidden = false;
+}
+
+// Validasi lampiran pengajuan sakit
+leaveTypeInput.addEventListener('change', () => {
+  leaveAttachmentInput.required = leaveTypeInput.value === 'SAKIT';
+});
+
+// Pastikan tanggal selesai tidak lebih awal daripada tanggal mulai
+startDateInput.addEventListener('change', () => {
+  endDateInput.min = startDateInput.value;
+
+  if (endDateInput.value && endDateInput.value < startDateInput.value) {
+    endDateInput.value = startDateInput.value;
+  }
+});
+
+// Kirim pengajuan
+leaveForm.addEventListener('submit', async event => {
+  event.preventDefault();
+
+  if (!currentUser) {
+    setLeaveFeedback('Silakan login terlebih dahulu.', 'error');
+    return;
+  }
+
+  if (endDateInput.value < startDateInput.value) {
+    setLeaveFeedback(
+      'Tanggal selesai tidak boleh sebelum tanggal mulai.',
+      'error'
+    );
+    return;
+  }
+
+  const attachment = leaveAttachmentInput.files[0];
+
+  if (leaveTypeInput.value === 'SAKIT' && !attachment) {
+    setLeaveFeedback(
+      'Lampiran wajib disertakan untuk pengajuan sakit.',
+      'error'
+    );
+    return;
+  }
+
+  if (attachment && attachment.size > 5 * 1024 * 1024) {
+    setLeaveFeedback('Ukuran lampiran maksimal 5 MB.', 'error');
+    return;
+  }
+
+  btnSubmitLeave.disabled = true;
+  btnSubmitLeave.textContent = 'Mengirim...';
+
+  try {
+    const response = await fetch('/api/attendance/leave', {
+      method: 'POST',
+      body: new FormData(leaveForm)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      setLeaveFeedback(
+        data.message || 'Pengajuan gagal dikirim.',
+        'error'
+      );
+      return;
+    }
+
+    setLeaveFeedback(
+      data.message || 'Pengajuan berhasil dikirim.',
+      'success'
+    );
+
+    leaveForm.reset();
+    endDateInput.min = '';
+    leaveAttachmentInput.required = false;
+
+  } catch (error) {
+    console.error('Pengajuan gagal:', error);
+    setLeaveFeedback(
+      'Tidak dapat terhubung ke server. Silakan coba lagi.',
+      'error'
+    );
+  } finally {
+    btnSubmitLeave.disabled = false;
+    btnSubmitLeave.textContent = 'Kirim Pengajuan';
+  }
+});
+
+// Format tanggal
+function formatHistoryDate(value) {
+  if (!value) return '-';
+
+  const parts = String(value).slice(0, 10).split('-');
+
+  if (parts.length !== 3) return String(value);
+
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
+
+function leaveTypeLabel(type) {
+  const labels = {
+    IZIN: 'Izin',
+    SAKIT: 'Sakit',
+    CUTI: 'Cuti'
+  };
+
+  return labels[type] || type || 'Pengajuan';
+}
+
+function leaveStatusLabel(status) {
+  const labels = {
+    PENDING: 'Menunggu Persetujuan',
+    APPROVED: 'Disetujui',
+    REJECTED: 'Ditolak'
+  };
+
+  return labels[status] || status || 'Tidak diketahui';
+}
+
+// Muat riwayat dari server
+async function loadLeaveHistory() {
+  leaveHistoryList.replaceChildren();
+
+  const loading = document.createElement('p');
+  loading.className = 'history-empty';
+  loading.textContent = 'Memuat riwayat pengajuan...';
+  leaveHistoryList.appendChild(loading);
+
+  historyFeedback.hidden = true;
+
+  try {
+    const status = historyStatus.value || 'ALL';
+
+    const response = await fetch(
+      `/api/attendance/leave?status=${encodeURIComponent(status)}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Gagal memuat riwayat.');
+    }
+
+    const records = Array.isArray(data.data) ? data.data : [];
+    leaveHistoryList.replaceChildren();
+
+    if (records.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'history-empty';
+      empty.textContent = 'Belum ada riwayat pengajuan.';
+      leaveHistoryList.appendChild(empty);
+      return;
+    }
+
+    records.forEach(record => {
+      const card = document.createElement('article');
+      card.className = 'leave-history-card';
+
+      const heading = document.createElement('div');
+      heading.className = 'history-card-heading';
+
+      const title = document.createElement('h3');
+      title.textContent = leaveTypeLabel(record.leave_type);
+
+      const badge = document.createElement('span');
+      badge.className =
+        `history-status status-${String(record.status || '').toLowerCase()}`;
+      badge.textContent = leaveStatusLabel(record.status);
+
+      heading.append(title, badge);
+
+      const dates = document.createElement('p');
+      dates.textContent =
+        `Tanggal: ${formatHistoryDate(record.start_date)} – ` +
+        `${formatHistoryDate(record.end_date)}`;
+
+      const reason = document.createElement('p');
+      reason.textContent = `Alasan: ${record.reason || '-'}`;
+
+    card.append(heading, dates, reason);
+    if (record.has_attachment){
+        const attachmentLink = document.createElement('a');
+
+        attachmentLink.href =
+        `/api/attendance/leave/${encodeURIComponent(record.id)}/attachment`;
+
+        attachmentLink.textContent = 'Lihat Lampiran';
+        attachmentLink.target = '_blank';
+        attachmentLink.rel = 'noopener noreferrer';
+
+        card.appendChild(attachmentLink);
+    }if (record.review_note){
+        const note = document.createElement('p');
+        note.textContent = `Catatan admin: ${record.review_note}`;
+        card.appendChild(note);
+      }
+
+
+      leaveHistoryList.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error('Gagal memuat riwayat:', error);
+    leaveHistoryList.replaceChildren();
+
+    const message = document.createElement('p');
+    message.className = 'history-empty';
+    message.textContent = error.message;
+    leaveHistoryList.appendChild(message);
+  }
+}
+
+historyStatus.addEventListener('change', loadLeaveHistory);
+btnRefreshHistory.addEventListener('click', loadLeaveHistory);

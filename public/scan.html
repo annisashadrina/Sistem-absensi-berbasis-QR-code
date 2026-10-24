@@ -39,8 +39,28 @@
     ⚠️ Anda belum login. Silakan <a href="/login?redirect=/scan" style="color:#ffffff; font-weight:700; text-decoration:underline;">Login di sini</a> sebelum melakukan absensi.
   </div>
 
-  <!-- Main Viewport -->
-  <main class="scanner-viewport-wrapper">
+  <!-- Navigasi Fitur Karyawan -->
+<nav class="employee-nav" aria-label="Menu karyawan">
+  <button type="button" class="employee-nav-btn active"
+          data-view="scannerView">
+    Absensi QR
+  </button>
+
+  <button type="button" class="employee-nav-btn"
+          data-view="leaveView">
+    Pengajuan Izin
+  </button>
+
+  <button type="button" class="employee-nav-btn"
+          data-view="historyView">
+    Riwayat
+  </button>
+</nav>
+
+<!-- Main Viewport -->
+<main>
+  <section id="scannerView" class="employee-view active">
+    <div class="scanner-viewport-wrapper">
 
     <!-- Mode Absensi: Masuk vs Pulang -->
     <div class="scan-mode-tabs">
@@ -90,7 +110,99 @@
       </div>
     </div>
 
-  </main>
+      </div>
+  </section>
+
+  <!-- Form Pengajuan Izin -->
+  <section id="leaveView" class="employee-view" hidden>
+    <div class="employee-content">
+      <div class="employee-page-heading">
+        <h2>Pengajuan Izin</h2>
+        <p>Ajukan izin, sakit, atau cuti melalui formulir berikut.</p>
+      </div>
+
+      <div id="leaveFeedback" class="leave-feedback" role="status"
+           aria-live="polite" hidden></div>
+
+      <form id="leaveForm" class="leave-form">
+        <div class="leave-field">
+          <label for="leaveType">Jenis Pengajuan</label>
+          <select id="leaveType" name="leaveType" required>
+            <option value="">Pilih jenis pengajuan</option>
+            <option value="IZIN">Izin</option>
+            <option value="SAKIT">Sakit</option>
+            <option value="CUTI">Cuti</option>
+          </select>
+        </div>
+
+        <div class="leave-date-grid">
+          <div class="leave-field">
+            <label for="startDate">Tanggal Mulai</label>
+            <input type="date" id="startDate" name="startDate" required>
+          </div>
+
+          <div class="leave-field">
+            <label for="endDate">Tanggal Selesai</label>
+            <input type="date" id="endDate" name="endDate" required>
+          </div>
+        </div>
+
+        <div class="leave-field">
+          <label for="leaveReason">Alasan Pengajuan</label>
+          <textarea id="leaveReason" name="reason" rows="4"
+                    maxlength="500" required
+                    placeholder="Jelaskan alasan pengajuanmu..."></textarea>
+          <small>Maksimal 500 karakter.</small>
+        </div>
+
+        <div class="leave-field">
+          <label for="leaveAttachment">Lampiran</label>
+          <input type="file" id="leaveAttachment" name="attachment"
+                 accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf">
+          <small id="attachmentHelp">
+            JPG, PNG, atau PDF. Maksimal 5 MB.
+            Lampiran wajib untuk pengajuan sakit.
+          </small>
+        </div>
+
+        <button id="btnSubmitLeave" type="submit" class="btn btn-primary">
+          Kirim Pengajuan
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Riwayat Pengajuan -->
+  <section id="historyView" class="employee-view" hidden>
+    <div class="employee-content">
+      <div class="employee-page-heading">
+        <h2>Riwayat Pengajuan</h2>
+        <p>Pantau status pengajuan izin, sakit, dan cutimu.</p>
+      </div>
+
+      <div class="history-toolbar">
+        <label for="historyStatus">Filter Status</label>
+        <select id="historyStatus">
+          <option value="ALL">Semua Status</option>
+          <option value="PENDING">Menunggu</option>
+          <option value="APPROVED">Disetujui</option>
+          <option value="REJECTED">Ditolak</option>
+        </select>
+
+        <button id="btnRefreshHistory" type="button" class="btn btn-outline">
+          Muat Ulang
+        </button>
+      </div>
+
+      <div id="historyFeedback" class="leave-feedback" role="status"
+           aria-live="polite" hidden></div>
+
+      <div id="leaveHistoryList" class="leave-history-list">
+        <p class="history-empty">Riwayat akan ditampilkan di sini.</p>
+      </div>
+    </div>
+  </section>
+</main>
 
   <!-- Modal Hasil Absensi (Bab 13) -->
   <div id="resultModal" class="result-modal-overlay">

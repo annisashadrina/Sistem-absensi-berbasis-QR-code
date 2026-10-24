@@ -96,8 +96,8 @@ router.get("/", async (req, res) => {
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (error) {
-    console.error("[LEAVE_ADMIN_LIST_ERROR]", error.message);
-    return fail(res, 500, "Gagal memuat daftar pengajuan.");
+    console.error("[LEAVE_ADMIN_LIST_ERROR]", error);
+    return fail(res, 500, "Gagal memuat daftar pengajuan." + error.message);
   }
 });
 
@@ -114,7 +114,7 @@ router.get("/:id", async (req, res) => {
 
     return res.json({ success: true, data: result.rows[0] });
   } catch (error) {
-    console.error("[LEAVE_ADMIN_DETAIL_ERROR]", error.message);
+    console.error("[LEAVE_ADMIN_DETAIL_ERROR]", error);
     return fail(res, 500, "Gagal memuat detail pengajuan.");
   }
 });
