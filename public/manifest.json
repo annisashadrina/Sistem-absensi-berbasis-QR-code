@@ -1,0 +1,20 @@
+{
+  "short_name": "Absensi",
+  "name": "Sistem Absensi SMP Al Falah Assalam",
+  "icons": [
+    {
+      "src": "./assets/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./assets/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/login.html",
+  "background_color": "#ffffff",
+  "theme_color": "#198754",
+  "display": "standalone"
+}
