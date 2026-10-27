@@ -15,8 +15,8 @@
   <div class="login-card">
     <div class="login-brand-header">
       <div class="login-logo-circle" style="border-radius: 50%; overflow: hidden;">
-  <img src="/assets/icon-192x192.png" alt="Logo SMP Al Falah Assalam" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-</div>
+        <img src="/assets/icon-192x192.png" alt="Logo SMP Al Falah Assalam" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+      </div>
       <h1 class="login-title">Masuk ke Sistem Presensi</h1>
       <p class="login-subtitle">SMP Al Falah Assalam Tropodo</p>
     </div>
@@ -49,26 +49,40 @@
 
     <!-- Tombol Akun Cepat Pengujian (Demo Seeder) -->
     <div class="quick-accounts-box">
-      <div class="quick-accounts-title">⚡ Akun Demo / Pengujian Cepat:</div>
+      <div class="quick-accounts-title" style="display: flex; align-items: center; gap: 6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        <span>Akun Demo / Pengujian Cepat:</span>
+      </div>
       
       <button class="quick-account-btn" onclick="fillAccount('budi@company.com', 'password123')">
-        <span>👤 Budi Santoso (Guru MTK)</span>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Budi Santoso (Guru MTK)
+        </span>
         <span class="badge badge-on-time" style="font-size:0.7rem;">Pegawai</span>
       </button>
 
       <button class="quick-account-btn" onclick="fillAccount('siti@company.com', 'password123')">
-        <span>👤 Siti Rahma (Guru B.Indo)</span>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Siti Rahma (Guru B.Indo)
+        </span>
         <span class="badge badge-on-time" style="font-size:0.7rem;">Pegawai</span>
       </button>
 
       <button class="quick-account-btn" onclick="fillAccount('admin@company.com', 'password123')">
-        <span>🛡️ Administrator HR</span>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Administrator HR
+        </span>
         <span class="badge badge-completed" style="font-size:0.7rem;">Admin</span>
       </button>
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <a href="/" style="font-size: 0.85rem; color: #64748b; text-decoration: none;">&larr; Kembali ke Portal Utama</a>
+      <a href="/" style="font-size: 0.85rem; color: #64748b; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+        &larr; Kembali ke Portal Utama
+      </a>
     </div>
   </div>
 

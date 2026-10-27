@@ -7,14 +7,30 @@
   <link rel="icon" type="image/png" href="/assets/icon-192x192.png">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/scan.css">
+  
+  <style>
+    .result-card.success {
+      background: #ffffff !important;
+      border-top: 6px solid #198754 !important;
+      border-radius: 12px;
+    }
+    .result-card.success .result-icon-circle {
+      background-color: #d1e7dd !important;
+      color: #0f5132 !important;
+    }
+  </style>
+
 </head>
 <body class="scanner-page">
-
-  <!-- Header -->
   <header class="scanner-header">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <a href="/" style="color: #9fe1b8; text-decoration: none; font-size: 1.2rem;">&larr;</a>
-      <h1 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">Web QR Scanner</h1>
+      <a href="/" style="color: #9fe1b8; text-decoration: none; font-size: 1.2rem; display: inline-flex; align-items: center;" title="Kembali ke Portal Utama">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </a>
+      <h1 style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin: 0;">Web QR Scanner</h1>
     </div>
     <div style="font-size: 0.8rem; color: #9fe1b8; display: flex; align-items: center; gap: 6px;">
       <img src="/assets/icon-192x192.png" alt="Logo SMP Al Falah Assalam" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
@@ -22,7 +38,7 @@
     </div>
   </header>
 
-  <!-- User Session Info Bar (Bab 8) -->
+  <!-- User Session Info Bar -->
   <div id="sessionBar" class="user-badge-bar">
     <div class="user-badge-info">
       <div id="userAvatar" class="user-avatar">?</div>
@@ -38,182 +54,186 @@
 
   <!-- Warning jika belum login -->
   <div id="loginWarningAlert" style="display:none; background:#7f1d1d; color:#fecaca; padding:12px 20px; font-size:0.85rem; border-bottom:1px solid #991b1b; text-align:center;">
-    ⚠️ Anda belum login. Silakan <a href="/login?redirect=/scan" style="color:#ffffff; font-weight:700; text-decoration:underline;">Login di sini</a> sebelum melakukan absensi.
+    <span style="display: inline-flex; align-items: center; gap: 6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      Anda belum login. Silakan <a href="/login?redirect=/scan" style="color:#ffffff; font-weight:700; text-decoration:underline;">Login di sini</a> sebelum melakukan absensi.
+    </span>
   </div>
 
   <!-- Navigasi Fitur Karyawan -->
-<nav class="employee-nav" aria-label="Menu karyawan">
-  <button type="button" class="employee-nav-btn active"
-          data-view="scannerView">
-    Absensi QR
-  </button>
+  <nav class="employee-nav" aria-label="Menu karyawan">
+    <button type="button" class="employee-nav-btn active" data-view="scannerView">
+      Absensi QR
+    </button>
 
-  <button type="button" class="employee-nav-btn"
-          data-view="leaveView">
-    Pengajuan Izin
-  </button>
+    <button type="button" class="employee-nav-btn" data-view="leaveView">
+      Pengajuan Izin
+    </button>
 
-  <button type="button" class="employee-nav-btn"
-          data-view="historyView">
-    Riwayat
-  </button>
-</nav>
+    <button type="button" class="employee-nav-btn" data-view="historyView">
+      Riwayat
+    </button>
+  </nav>
 
-<!-- Main Viewport -->
-<main>
-  <section id="scannerView" class="employee-view active">
-    <div class="scanner-viewport-wrapper">
+  <!-- Main Viewport -->
+  <main>
+    <section id="scannerView" class="employee-view active">
+      <div class="scanner-viewport-wrapper">
 
-    <!-- Mode Absensi: Masuk vs Pulang -->
-    <div class="scan-mode-tabs">
-      <button id="btnModeCheckIn" class="mode-tab-btn active" onclick="setScanMode('CHECK_IN')">
-        ☀️ Absen Masuk
-      </button>
-      <button id="btnModeCheckOut" class="mode-tab-btn" onclick="setScanMode('CHECK_OUT')">
-        🌙 Absen Pulang
-      </button>
-    </div>
+        <!-- Mode Absensi: Masuk vs Pulang -->
+        <div class="scan-mode-tabs">
+          <button id="btnModeCheckIn" class="mode-tab-btn active" onclick="setScanMode('CHECK_IN')" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            Absen Masuk
+          </button>
+          <button id="btnModeCheckOut" class="mode-tab-btn" onclick="setScanMode('CHECK_OUT')" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Absen Pulang
+          </button>
+        </div>
 
-    <!-- Camera Video Box -->
-    <div class="camera-container" id="cameraContainer">
-      <video id="cameraVideo" playsinline autoplay muted></video>
-      <canvas id="cameraCanvas" style="display:none;"></canvas>
+        <!-- Camera Video Box -->
+        <div class="camera-container" id="cameraContainer">
+          <video id="cameraVideo" playsinline autoplay muted></video>
+          <canvas id="cameraCanvas" style="display:none;"></canvas>
 
-      <div class="scan-reticle">
-        <div class="scan-laser"></div>
+          <div class="scan-reticle">
+            <div class="scan-laser"></div>
+          </div>
+
+          <div id="cameraStatusText" style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.8); background:rgba(0,0,0,0.5); padding:4px;">
+            Arahkan kamera ke QR Code monitor
+          </div>
+        </div>
+
+        <!-- Tombol Kontrol Kamera -->
+        <div style="display:flex; gap:12px; margin-top:14px; justify-content: center;">
+          <button id="btnStartCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            Buka Kamera
+          </button>
+          <button id="btnSwitchCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Balik Kamera
+          </button>
+        </div>
+
+        <!-- Input Manual Token (Simulasi Scan) -->
+        <div class="manual-input-box">
+          <h5 style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6.01" y2="8"></line><line x1="10" y1="8" x2="10.01" y2="8"></line><line x1="14" y1="8" x2="14.01" y2="8"></line><line x1="18" y1="8" x2="18.01" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="6" y1="16" x2="6.01" y2="16"></line><line x1="18" y1="16" x2="18.01" y2="16"></line></svg>
+            Uji Token Manual (Simulasi Scan)
+          </h5>
+          <div class="manual-input-flex">
+            <input type="text" id="manualTokenInput" placeholder="Tempel token QR di sini...">
+            <button id="btnSubmitManualToken" class="btn btn-accent" style="padding:8px 14px; font-size:0.85rem;">
+              Absen
+            </button>
+          </div>
+          <div style="font-size:0.72rem; color:#94a3b8; margin-top:6px;">
+            *Tips: Salin token dari layar monitor atau gunakan kamera.
+          </div>
+        </div>
+
       </div>
+    </section>
 
-      <div id="cameraStatusText" style="position:absolute; bottom:12px; left:0; right:0; text-align:center; font-size:0.8rem; color:rgba(255,255,255,0.8); background:rgba(0,0,0,0.5); padding:4px;">
-        Arahkan kamera ke QR Code monitor
+    <!-- Form Pengajuan Izin -->
+    <section id="leaveView" class="employee-view" hidden>
+      <div class="employee-content">
+        <div class="employee-page-heading">
+          <h2>Pengajuan Izin</h2>
+          <p>Ajukan izin, sakit, atau cuti melalui formulir berikut.</p>
+        </div>
+
+        <div id="leaveFeedback" class="leave-feedback" role="status" aria-live="polite" hidden></div>
+
+        <form id="leaveForm" class="leave-form">
+          <div class="leave-field">
+            <label for="leaveType">Jenis Pengajuan</label>
+            <select id="leaveType" name="leaveType" required>
+              <option value="">Pilih jenis pengajuan</option>
+              <option value="IZIN">Izin</option>
+              <option value="SAKIT">Sakit</option>
+              <option value="CUTI">Cuti</option>
+            </select>
+          </div>
+
+          <div class="leave-date-grid">
+            <div class="leave-field">
+              <label for="startDate">Tanggal Mulai</label>
+              <input type="date" id="startDate" name="startDate" required>
+            </div>
+
+            <div class="leave-field">
+              <label for="endDate">Tanggal Selesai</label>
+              <input type="date" id="endDate" name="endDate" required>
+            </div>
+          </div>
+
+          <div class="leave-field">
+            <label for="leaveReason">Alasan Pengajuan</label>
+            <textarea id="leaveReason" name="reason" rows="4" maxlength="500" required placeholder="Jelaskan alasan pengajuanmu..."></textarea>
+            <small>Maksimal 500 karakter.</small>
+          </div>
+
+          <div class="leave-field">
+            <label for="leaveAttachment">Lampiran</label>
+            <input type="file" id="leaveAttachment" name="attachment" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf">
+            <small id="attachmentHelp">
+              JPG, PNG, atau PDF. Maksimal 5 MB. Lampiran wajib untuk pengajuan sakit.
+            </small>
+          </div>
+
+          <button id="btnSubmitLeave" type="submit" class="btn btn-primary">
+            Kirim Pengajuan
+          </button>
+        </form>
       </div>
-    </div>
+    </section>
 
-    <!-- Tombol Kontrol Kamera -->
-    <div style="display:flex; gap:12px; margin-top:14px;">
-      <button id="btnStartCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px;">
-        📷 Buka Kamera
-      </button>
-      <button id="btnSwitchCamera" class="btn btn-outline" style="color:#ffffff; border-color:rgba(255,255,255,0.3); font-size:0.85rem; padding:8px 16px;">
-        🔄 Balik Kamera
-      </button>
-    </div>
+    <!-- Riwayat Pengajuan -->
+    <section id="historyView" class="employee-view" hidden>
+      <div class="employee-content">
+        <div class="employee-page-heading">
+          <h2>Riwayat Pengajuan</h2>
+          <p>Pantau status pengajuan izin, sakit, dan cutimu.</p>
+        </div>
 
-    <!-- Input Manual Token (Sangat praktis untuk pengujian simulasi tanpa kamera) -->
-    <div class="manual-input-box">
-      <h5>⌨️ Uji Token Manual (Simulasi Scan)</h5>
-      <div class="manual-input-flex">
-        <input type="text" id="manualTokenInput" placeholder="Tempel token QR di sini...">
-        <button id="btnSubmitManualToken" class="btn btn-accent" style="padding:8px 14px; font-size:0.85rem;">
-          Absen
-        </button>
-      </div>
-      <div style="font-size:0.72rem; color:#94a3b8; margin-top:6px;">
-        *Tips: Salin token dari layar monitor atau gunakan kamera.
-      </div>
-    </div>
-
-      </div>
-  </section>
-
-  <!-- Form Pengajuan Izin -->
-  <section id="leaveView" class="employee-view" hidden>
-    <div class="employee-content">
-      <div class="employee-page-heading">
-        <h2>Pengajuan Izin</h2>
-        <p>Ajukan izin, sakit, atau cuti melalui formulir berikut.</p>
-      </div>
-
-      <div id="leaveFeedback" class="leave-feedback" role="status"
-           aria-live="polite" hidden></div>
-
-      <form id="leaveForm" class="leave-form">
-        <div class="leave-field">
-          <label for="leaveType">Jenis Pengajuan</label>
-          <select id="leaveType" name="leaveType" required>
-            <option value="">Pilih jenis pengajuan</option>
-            <option value="IZIN">Izin</option>
-            <option value="SAKIT">Sakit</option>
-            <option value="CUTI">Cuti</option>
+        <div class="history-toolbar">
+          <label for="historyStatus">Filter Status</label>
+          <select id="historyStatus">
+            <option value="ALL">Semua Status</option>
+            <option value="PENDING">Menunggu</option>
+            <option value="APPROVED">Disetujui</option>
+            <option value="REJECTED">Ditolak</option>
           </select>
+
+          <button id="btnRefreshHistory" type="button" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Muat Ulang
+          </button>
         </div>
 
-        <div class="leave-date-grid">
-          <div class="leave-field">
-            <label for="startDate">Tanggal Mulai</label>
-            <input type="date" id="startDate" name="startDate" required>
-          </div>
+        <div id="historyFeedback" class="leave-feedback" role="status" aria-live="polite" hidden></div>
 
-          <div class="leave-field">
-            <label for="endDate">Tanggal Selesai</label>
-            <input type="date" id="endDate" name="endDate" required>
-          </div>
+        <div id="leaveHistoryList" class="leave-history-list">
+          <p class="history-empty">Riwayat akan ditampilkan di sini.</p>
         </div>
-
-        <div class="leave-field">
-          <label for="leaveReason">Alasan Pengajuan</label>
-          <textarea id="leaveReason" name="reason" rows="4"
-                    maxlength="500" required
-                    placeholder="Jelaskan alasan pengajuanmu..."></textarea>
-          <small>Maksimal 500 karakter.</small>
-        </div>
-
-        <div class="leave-field">
-          <label for="leaveAttachment">Lampiran</label>
-          <input type="file" id="leaveAttachment" name="attachment"
-                 accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf">
-          <small id="attachmentHelp">
-            JPG, PNG, atau PDF. Maksimal 5 MB.
-            Lampiran wajib untuk pengajuan sakit.
-          </small>
-        </div>
-
-        <button id="btnSubmitLeave" type="submit" class="btn btn-primary">
-          Kirim Pengajuan
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Riwayat Pengajuan -->
-  <section id="historyView" class="employee-view" hidden>
-    <div class="employee-content">
-      <div class="employee-page-heading">
-        <h2>Riwayat Pengajuan</h2>
-        <p>Pantau status pengajuan izin, sakit, dan cutimu.</p>
       </div>
+    </section>
+  </main>
 
-      <div class="history-toolbar">
-        <label for="historyStatus">Filter Status</label>
-        <select id="historyStatus">
-          <option value="ALL">Semua Status</option>
-          <option value="PENDING">Menunggu</option>
-          <option value="APPROVED">Disetujui</option>
-          <option value="REJECTED">Ditolak</option>
-        </select>
-
-        <button id="btnRefreshHistory" type="button" class="btn btn-outline">
-          Muat Ulang
-        </button>
-      </div>
-
-      <div id="historyFeedback" class="leave-feedback" role="status"
-           aria-live="polite" hidden></div>
-
-      <div id="leaveHistoryList" class="leave-history-list">
-        <p class="history-empty">Riwayat akan ditampilkan di sini.</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-  <!-- Modal Hasil Absensi (Bab 13) -->
+  <!-- Modal Hasil Absensi -->
   <div id="resultModal" class="result-modal-overlay">
     <div id="resultCard" class="result-card success">
-      <div id="resultIcon" class="result-icon-circle">✓</div>
+      <div id="resultIcon" class="result-icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
       <h3 id="resultTitle" class="result-title">ABSENSI BERHASIL</h3>
       <div id="resultName" class="result-name">BUDI SANTOSO</div>
       <div id="resultTime" class="result-time-badge font-mono">07:52:14</div>
-      <div id="resultStatusTag" class="result-status-tag status-on-time">✓ TEPAT WAKTU</div>
+      <div id="resultStatusTag" class="result-status-tag status-on-time">TEPAT WAKTU</div>
       <p id="resultMessage" style="font-size:0.85rem; color:#64748b; margin-bottom:20px;"></p>
       <button id="btnCloseModal" class="btn btn-primary" style="width:100%;">
         Tutup & Selesai
