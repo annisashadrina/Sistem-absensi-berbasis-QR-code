@@ -93,6 +93,10 @@
         }
 
         const user = authData.user;
+        if (user.role === 'ADMIN') {
+          window.location.href = '/admin';
+          return;
+        }
 
         // 2. Tentukan apakah check-in atau check-out berdasarkan jam server
         // Default coba check-in; jika ditolak karena sudah check-in dan >= 16:00, coba check-out

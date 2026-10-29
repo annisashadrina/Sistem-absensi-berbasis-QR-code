@@ -46,6 +46,13 @@ async function checkAuthSession() {
     const data = await res.json();
 
     if (data.success && data.user) {
+      if (data.user.role === 'ADMIN') {
+        if (typeof stopCamera === 'function') {
+          stopCamera();
+        }
+        window.location.replace('/admin');
+        return;
+      }
       currentUser = data.user;
       userAvatar.textContent = currentUser.name.charAt(0);
       userName.textContent = currentUser.name;
@@ -62,7 +69,7 @@ async function checkAuthSession() {
       userName.textContent = 'Belum Login';
       userSub.textContent = 'Silakan login terlebih dahulu';
       sessionAction.innerHTML = `
-        <a href="/login?redirect=/scan" class="btn btn-accent" style="padding:6px 14px; font-size:0.78rem;">
+        <a href="/login" class="btn btn-accent" style="padding:6px 14px; font-size:0.78rem;">
           Login
         </a>
       `;
@@ -282,9 +289,10 @@ function closeModal() {
 async function handleLogout() {
   try {
     await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.reload();
   } catch (err) {
     console.error('Error logging out:', err);
+  } finally {
+    window.location.href = '/login';
   }
 }
 

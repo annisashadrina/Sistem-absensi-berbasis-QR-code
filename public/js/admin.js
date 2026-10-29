@@ -115,6 +115,10 @@ async function checkAdminAuth() {
       !data.user ||
       data.user.role !== 'ADMIN'
     ) {
+      if (data.success && data.user && data.user.role !== 'ADMIN') {
+        window.location.href = '/scan';
+        return;
+      }
       window.location.href = '/login?redirect=/admin';
       return;
     }

@@ -22,10 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(attachUser);
 
-// Static files
-const publicDir = path.resolve(__dirname, "../public");
-app.use(express.static(publicDir));
-
 // API Endpoints
 app.use("/api/auth", authRouter);
 app.use("/api/qr", qrRouter);
@@ -34,27 +30,52 @@ app.use("/api/attendance", attendanceRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/admin/employees", adminEmployeesRouter);
 app.use("/api/admin/leave", adminLeaveRouter);
-// Frontend Page Routing
+
+// Static files directory
+const publicDir = path.resolve(__dirname, "../public");
+
+// Frontend Page Routing with Role-based Guards
 app.get("/display", (req, res) => {
   res.sendFile(path.join(publicDir, "display.html"));
 });
 
-app.get("/scan", (req, res) => {
+app.get(["/scan", "/scan.html"], (req, res) => {
+  if (req.user && req.user.role === "ADMIN") {
+    return res.redirect("/admin");
+  }
   res.sendFile(path.join(publicDir, "scan.html"));
 });
 
-app.get("/login", (req, res) => {
+app.get(["/login", "/login.html"], (req, res) => {
+  if (req.user) {
+    if (req.user.role === "ADMIN") {
+      return res.redirect("/admin");
+    }
+    return res.redirect("/scan");
+  }
   res.sendFile(path.join(publicDir, "login.html"));
 });
 
-app.get("/admin", (req, res) => {
+app.get(["/admin", "/admin.html"], (req, res) => {
+  if (!req.user) {
+    return res.redirect("/login?redirect=/admin");
+  }
+  if (req.user.role !== "ADMIN") {
+    return res.redirect("/scan");
+  }
   res.sendFile(path.join(publicDir, "admin.html"));
 });
 
 // Scan QR melalui kamera HP (/a/:token)
 app.get("/a/:token", (req, res) => {
+  if (req.user && req.user.role === "ADMIN") {
+    return res.redirect("/admin");
+  }
   res.sendFile(path.join(publicDir, "attend.html"));
 });
+
+// Static files
+app.use(express.static(publicDir));
 
 // Default fallback
 app.use((req, res) => {

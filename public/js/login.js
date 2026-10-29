@@ -8,6 +8,25 @@ const passwordInput = document.getElementById('passwordInput');
 const btnLoginSubmit = document.getElementById('btnLoginSubmit');
 const loginAlert = document.getElementById('loginAlert');
 
+// Cek jika pengguna sudah memiliki sesi login aktif
+async function checkExistingSession() {
+  try {
+    const res = await fetch('/api/auth/me');
+    const data = await res.json();
+    if (data.success && data.user) {
+      if (data.user.role === 'ADMIN') {
+        window.location.replace('/admin');
+      } else {
+        window.location.replace('/scan');
+      }
+    }
+  } catch (err) {
+    // Abaikan jika tidak ada sesi atau offline
+  }
+}
+
+checkExistingSession();
+
 function fillAccount(email, password) {
   identifierInput.value = email;
   passwordInput.value = password;
@@ -64,12 +83,20 @@ loginForm.addEventListener('submit', async (e) => {
       const redirectUrl = urlParams.get('redirect');
 
       setTimeout(() => {
-        if (redirectUrl) {
-          window.location.href = redirectUrl;
-        } else if (data.user.role === 'ADMIN') {
-          window.location.href = '/admin';
+        if (data.user.role === 'ADMIN') {
+          // Admin selalu diarahkan ke dashboard admin, tidak boleh ke scanner
+          if (redirectUrl && redirectUrl.startsWith('/admin')) {
+            window.location.href = redirectUrl;
+          } else {
+            window.location.href = '/admin';
+          }
         } else {
-          window.location.href = '/scan';
+          // Pegawai / Guru diarahkan ke web scanner (/scan)
+          if (redirectUrl && !redirectUrl.startsWith('/admin')) {
+            window.location.href = redirectUrl;
+          } else {
+            window.location.href = '/scan';
+          }
         }
       }, 700);
     } else {
