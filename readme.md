@@ -222,7 +222,7 @@ audit_logs (id, employee_id, action, ip_address, user_agent, metadata, created_a
    ```bash
    npm start
    ```
-   Aplikasi akan aktif di **`http://localhost:3000`**.
+   Aplikasi akan aktif di **`http://localhost:1116`**.
 
 6. **Menjalankan Pengujian Integrasi Otomatis**:
    ```bash
@@ -236,12 +236,12 @@ audit_logs (id, employee_id, action, ip_address, user_agent, metadata, created_a
 
 | Halaman | URL | Keterangan |
 | :--- | :--- | :--- |
-| **Portal Navigasi** | `http://localhost:3000/` | Pintu masuk utama menuju seluruh modul sistem. |
-| **Layar Display TV** | `http://localhost:3000/display` | Ditampilkan di TV/Monitor lobi kantor (QR Dinamis, Jam Server, Top 5 Terawal). |
-| **Web QR Scanner** | `http://localhost:3000/scan` | Dibuka di smartphone karyawan untuk scan QR masuk/pulang. |
-| **Scan Kamera Bawaan** | `http://localhost:3000/a/:token` | URL otomatis saat karyawan scan QR langsung pakai aplikasi kamera HP bawaan. |
-| **Login Pengguna** | `http://localhost:3000/login` | Login karyawan & admin dengan tombol akun demo sekali klik. |
-| **Dashboard Admin** | `http://localhost:3000/admin` | Monitoring metrik kehadiran, filter tanggal/departemen, ekspor CSV, dan audit log. |
+| **Portal Navigasi** | `http://localhost:1116/` | Pintu masuk utama menuju seluruh modul sistem. |
+| **Layar Display TV** | `http://localhost:1116/display` | Ditampilkan di TV/Monitor lobi kantor (QR Dinamis, Jam Server, Top 5 Terawal). |
+| **Web QR Scanner** | `http://localhost:1116/scan` | Dibuka di smartphone karyawan untuk scan QR masuk/pulang. |
+| **Scan Kamera Bawaan** | `http://localhost:1116/a/:token` | URL otomatis saat karyawan scan QR langsung pakai aplikasi kamera HP bawaan. |
+| **Login Pengguna** | `http://localhost:1116/login` | Login karyawan & admin dengan tombol akun demo sekali klik. |
+| **Dashboard Admin** | `http://localhost:1116/admin` | Monitoring metrik kehadiran, filter tanggal/departemen, ekspor CSV, dan audit log. |
 
 ---
 
